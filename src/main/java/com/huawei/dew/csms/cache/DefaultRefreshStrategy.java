@@ -8,7 +8,7 @@ import com.huawei.dew.csms.model.SecretInfoCache;
 import java.io.IOException;
 import java.util.Map;
 
-public class DefaultRefreshStrategy implements RefreshStrategy{
+public class DefaultRefreshStrategy implements RefreshStrategy {
 
     private final static Gson gson = new Gson();
 
@@ -20,7 +20,7 @@ public class DefaultRefreshStrategy implements RefreshStrategy{
     @Override
     public long getNextRefreshTime(long period, long lastRotationTime) {
         long currentTimeMillis = System.currentTimeMillis();
-        if(lastRotationTime + period > currentTimeMillis){
+        if (lastRotationTime + period > currentTimeMillis) {
             return lastRotationTime + period;
         }
         return currentTimeMillis + period;
@@ -30,7 +30,7 @@ public class DefaultRefreshStrategy implements RefreshStrategy{
     public long parseNextRefreshTime(SecretInfoCache secretInfoCache) {
         SecretInfo secretInfo = secretInfoCache.getSecretInfo();
         long period = parsePeriod(secretInfo);
-        if(period <= 0){
+        if (period <= 0) {
             return period;
         }
         return getNextRefreshTime(period, secretInfoCache.getRefreshTimeStamp());
@@ -41,7 +41,7 @@ public class DefaultRefreshStrategy implements RefreshStrategy{
         try {
             Map<String, Object> map = gson.fromJson(secretInfo.getValue(), Map.class);
             return ((Double) map.get(rotationTimeName)).longValue();
-        }catch (Exception e){
+        } catch (Exception e) {
             return -1;
         }
     }

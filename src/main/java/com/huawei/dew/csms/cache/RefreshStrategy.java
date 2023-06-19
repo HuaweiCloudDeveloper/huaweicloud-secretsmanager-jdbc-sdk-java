@@ -10,7 +10,7 @@ public interface RefreshStrategy extends Closeable {
     /**
      * 计算下一次轮转时间
      *
-     * @param period 凭据轮转间隔
+     * @param period           凭据轮转间隔
      * @param lastRotationTime 上一次轮转时间
      * @return 下一次轮转时间
      */

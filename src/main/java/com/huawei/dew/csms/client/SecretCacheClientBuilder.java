@@ -50,10 +50,10 @@ public class SecretCacheClientBuilder {
             //默认使用内存缓存
             secretCacheClient.cacheStoreStrategy = new MemoryCacheStoreStrategy();
         }
-        if(secretCacheClient.refreshStrategy == null){
+        if (secretCacheClient.refreshStrategy == null) {
             secretCacheClient.refreshStrategy = new DefaultRefreshStrategy();
         }
-        if(secretCacheClient.secretCacheHook == null){
+        if (secretCacheClient.secretCacheHook == null) {
             secretCacheClient.secretCacheHook = new DefaultSecretCacheHook(Constants.VERSION_STAGE_CURRENT);
         }
         secretCacheClient.init();

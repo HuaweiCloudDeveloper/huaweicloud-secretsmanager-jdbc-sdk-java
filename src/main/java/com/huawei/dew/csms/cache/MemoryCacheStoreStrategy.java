@@ -15,12 +15,11 @@ public class MemoryCacheStoreStrategy implements CacheStoreStrategy {
 
     @Override
     public void init() {
-        //内存缓存无需初始化配置
     }
 
     @Override
     public void storeSecret(SecretInfoCache secretInfoCache) {
-        secretInfoCacheMap.put(secretInfoCache.getSecretInfo().getName(),secretInfoCache);
+        secretInfoCacheMap.put(secretInfoCache.getSecretInfo().getName(), secretInfoCache);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class MemoryCacheStoreStrategy implements CacheStoreStrategy {
 
     @Override
     public void close() throws IOException {
-        if(null != secretInfoCacheMap){
+        if (null != secretInfoCacheMap) {
             secretInfoCacheMap.clear();
         }
     }

@@ -100,7 +100,7 @@ public abstract class HWCsmsDriver implements Driver {
         Properties userInfo = new Properties();
         while (retryTimes++ <= RETRY_TIMES) {
             try {
-                 SecretInfo secretInfo = secretCacheClient.getSecretInfo(secretName);
+                SecretInfo secretInfo = secretCacheClient.getSecretInfo(secretName);
                 //获取凭据值
                 String secretValue = secretInfo.getValue();
                 Properties secretProperties = new Gson().fromJson(secretValue, Properties.class);
