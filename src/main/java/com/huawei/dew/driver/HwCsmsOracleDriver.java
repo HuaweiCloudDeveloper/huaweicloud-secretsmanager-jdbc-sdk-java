@@ -4,7 +4,7 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HWCsmsOracleDriver extends HWCsmsDriver {
+public class HwCsmsOracleDriver extends HwCsmsDriver {
     public static final int CREDENTIALS_NOT_MATCH = 17079;
 
     public static final int USERNAME_PASSWORD_INVALID = 1017;
@@ -14,14 +14,14 @@ public class HWCsmsOracleDriver extends HWCsmsDriver {
     public static final String SUBPREFIX = "oracle";
 
     static {
-        HWCsmsOracleDriver.registerDriver(new HWCsmsOracleDriver());
+        HwCsmsOracleDriver.registerDriver(new HwCsmsOracleDriver());
     }
 
-    public HWCsmsOracleDriver() {
+    public HwCsmsOracleDriver() {
         super();
     }
 
-    public HWCsmsOracleDriver(SecretCacheClient secretCacheClient) {
+    public HwCsmsOracleDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 

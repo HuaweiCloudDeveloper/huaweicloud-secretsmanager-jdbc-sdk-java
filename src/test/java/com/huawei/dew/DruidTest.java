@@ -1,12 +1,9 @@
 package com.huawei.dew;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.huawei.dew.driver.HWCsmsDriver;
 import org.junit.Test;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;

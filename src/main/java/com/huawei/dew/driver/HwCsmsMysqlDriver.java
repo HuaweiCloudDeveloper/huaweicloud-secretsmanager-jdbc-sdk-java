@@ -4,26 +4,27 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HWCsmsMSSQLServerDriver extends HWCsmsDriver {
-    public static final int LOGIN_FAILED = 1045;
+public class HwCsmsMysqlDriver extends HwCsmsDriver {
 
-    public static final String SUBPREFIX = "sqlserver";
+    public static final int LOGIN_FAILED_CODE = 1045;
+
+    public static final String SUBPREFIX = "mysql";
 
     static {
-        HWCsmsMSSQLServerDriver.registerDriver(new HWCsmsMSSQLServerDriver());
+        HwCsmsMysqlDriver.registerDriver(new HwCsmsMysqlDriver());
     }
 
-    public HWCsmsMSSQLServerDriver() {
+    public HwCsmsMysqlDriver() {
         super();
     }
 
-    public HWCsmsMSSQLServerDriver(SecretCacheClient secretCacheClient) {
+    public HwCsmsMysqlDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
     @Override
     protected String getRealDriverClass() {
-        return "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+        return "com.mysql.cj.jdbc.Driver";
     }
 
     @Override
@@ -39,9 +40,11 @@ public class HWCsmsMSSQLServerDriver extends HWCsmsDriver {
     @Override
     protected boolean isAuthError(Exception e) {
         if (e instanceof SQLException) {
-            SQLException sqlException = (SQLException) e;
-            return sqlException.getErrorCode() == LOGIN_FAILED;
+            SQLException sqle = (SQLException) e;
+            int errorCode = sqle.getErrorCode();
+            return errorCode == LOGIN_FAILED_CODE;
         }
         return false;
     }
+
 }

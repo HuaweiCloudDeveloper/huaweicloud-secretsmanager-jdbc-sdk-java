@@ -1,6 +1,6 @@
 package com.huawei.dew;
 
-import com.huawei.dew.driver.HWCsmsMysqlDriver;
+import com.huawei.dew.driver.HwCsmsMysqlDriver;
 import org.junit.Test;
 
 import java.sql.*;
@@ -9,7 +9,7 @@ import java.util.Properties;
 public class JDBCTest {
     @Test
     public void testMysqlDriver() throws SQLException {
-        HWCsmsMysqlDriver driver = new HWCsmsMysqlDriver();
+        HwCsmsMysqlDriver driver = new HwCsmsMysqlDriver();
         Properties info = new Properties();
         info.put("user","localdb");
         Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info);

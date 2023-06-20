@@ -15,7 +15,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public abstract class HWCsmsDriver implements Driver {
+public abstract class HwCsmsDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
@@ -37,11 +37,11 @@ public abstract class HWCsmsDriver implements Driver {
 
     public abstract String getPropertySubPrefix();
 
-    public HWCsmsDriver() {
+    public HwCsmsDriver() {
         this(SecretCacheClientBuilder.getClient());
     }
 
-    public HWCsmsDriver(SecretCacheClient secretCacheClient) {
+    public HwCsmsDriver(SecretCacheClient secretCacheClient) {
         this.secretCacheClient = secretCacheClient;
 
         setConfig();
@@ -57,7 +57,7 @@ public abstract class HWCsmsDriver implements Driver {
         this.realDriverClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealDriverClass());
     }
 
-    public static void registerDriver(HWCsmsDriver driver) {
+    public static void registerDriver(HwCsmsDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
@@ -65,7 +65,7 @@ public abstract class HWCsmsDriver implements Driver {
         }
     }
 
-    private static void shutdown(HWCsmsDriver driver) {
+    private static void shutdown(HwCsmsDriver driver) {
         try {
             driver.secretCacheClient.close();
         } catch (IOException e) {

@@ -19,6 +19,6 @@ public interface CacheStoreStrategy extends Closeable {
     /**
      * 获取缓存凭据缓存
      */
-    public SecretInfoCache getSecretInfoCache(String SecretName);
+    public SecretInfoCache getSecretInfoCache(String secretName);
 
 }

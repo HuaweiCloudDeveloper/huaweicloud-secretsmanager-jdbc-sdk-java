@@ -4,27 +4,26 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HWCsmsMysqlDriver extends HWCsmsDriver {
-
+public class HwCsmsMariaDBDriver extends HwCsmsDriver {
     public static final int LOGIN_FAILED_CODE = 1045;
 
-    public static final String SUBPREFIX = "mysql";
+    public static final String SUBPREFIX = "mariadb";
 
     static {
-        HWCsmsMysqlDriver.registerDriver(new HWCsmsMysqlDriver());
+        HwCsmsMariaDBDriver.registerDriver(new HwCsmsMariaDBDriver());
     }
 
-    public HWCsmsMysqlDriver() {
+    public HwCsmsMariaDBDriver() {
         super();
     }
 
-    public HWCsmsMysqlDriver(SecretCacheClient secretCacheClient) {
+    public HwCsmsMariaDBDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
     @Override
     protected String getRealDriverClass() {
-        return "com.mysql.cj.jdbc.Driver";
+        return "org.mariadb.jdbc.Driver";
     }
 
     @Override
@@ -46,5 +45,4 @@ public class HWCsmsMysqlDriver extends HWCsmsDriver {
         }
         return false;
     }
-
 }

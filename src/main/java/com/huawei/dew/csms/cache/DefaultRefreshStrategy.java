@@ -1,7 +1,6 @@
 package com.huawei.dew.csms.cache;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.csms.model.SecretInfoCache;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 
 public class DefaultRefreshStrategy implements RefreshStrategy {
 
-    private final static Gson gson = new Gson();
+    private final static Gson GSON = new Gson();
 
     /**
      * 凭据轮转
@@ -39,7 +38,7 @@ public class DefaultRefreshStrategy implements RefreshStrategy {
     @Override
     public long parsePeriod(SecretInfo secretInfo) {
         try {
-            Map<String, Object> map = gson.fromJson(secretInfo.getValue(), Map.class);
+            Map<String, Object> map = GSON.fromJson(secretInfo.getValue(), Map.class);
             return ((Double) map.get(rotationTimeName)).longValue();
         } catch (Exception e) {
             return -1;

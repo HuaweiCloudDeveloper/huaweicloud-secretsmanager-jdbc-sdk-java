@@ -36,7 +36,7 @@ public class CsmsClientBuilder {
                 .withProxyUsername(configUtils.getStringPropertyWithDefault(Constants.PROXY_USER, null))
                 .withProxyPassword(configUtils.getStringPropertyWithDefault(Constants.PROXY_PASSWORD, null))
                 .withTimeout(configUtils.getIntPropertyWithDefault(Constants.TIMEOUT, 10))
-                .withIgnoreSSLVerification(configUtils.getStringPropertyWithDefault(Constants.IGNORE_SSL, "fasle").equals("true"));
+                .withIgnoreSSLVerification("true".equals(configUtils.getStringPropertyWithDefault(Constants.IGNORE_SSL, "fasle")));
         //配置是否忽略SSL证书校验
         httpConfig.withIgnoreSSLVerification(true);
         //设置超时时间

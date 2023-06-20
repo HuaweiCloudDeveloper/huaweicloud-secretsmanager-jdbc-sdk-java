@@ -4,20 +4,20 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HWCsmsPostgreSQLDriver extends HWCsmsDriver {
+public class HwCsmsPostgreSQLDriver extends HwCsmsDriver {
     public static final String LOGIN_FAILED_CODE = "28P01";
 
     public static final String SUBPREFIX = "postgresql";
 
     static {
-        HWCsmsPostgreSQLDriver.registerDriver(new HWCsmsPostgreSQLDriver());
+        HwCsmsPostgreSQLDriver.registerDriver(new HwCsmsPostgreSQLDriver());
     }
 
-    public HWCsmsPostgreSQLDriver() {
+    public HwCsmsPostgreSQLDriver() {
         super();
     }
 
-    public HWCsmsPostgreSQLDriver(SecretCacheClient secretCacheClient) {
+    public HwCsmsPostgreSQLDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
