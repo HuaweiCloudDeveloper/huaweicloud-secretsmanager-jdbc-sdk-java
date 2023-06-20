@@ -5,7 +5,7 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 import java.sql.SQLException;
 
 public class HWCsmsMSSQLServerDriver extends HWCsmsDriver {
-    public static final int LOGIN_FAILED_CODE = 1045;
+    public static final int LOGIN_FAILED = 1045;
 
     public static final String SUBPREFIX = "sqlserver";
 
@@ -39,9 +39,8 @@ public class HWCsmsMSSQLServerDriver extends HWCsmsDriver {
     @Override
     protected boolean isAuthError(Exception e) {
         if (e instanceof SQLException) {
-            SQLException sqle = (SQLException) e;
-            int errorCode = sqle.getErrorCode();
-            return errorCode == LOGIN_FAILED_CODE;
+            SQLException sqlException = (SQLException) e;
+            return sqlException.getErrorCode() == LOGIN_FAILED;
         }
         return false;
     }

@@ -42,24 +42,21 @@ public final class ConfigUtils {
     }
 
     public ConfigUtils getSubconfig(String subprefix) {
-        Enumeration<String> propertyNames = (Enumeration<String>) config.propertyNames();
-        Properties subconfig = null;
-        while (propertyNames.hasMoreElements()) {
-            String name = propertyNames.nextElement();
-            if (isSubproperty(name, subprefix)) {
-                if (subconfig == null) {
-                    subconfig = new Properties();
-                }
-                String subpropertyName = getSubproperty(name, subprefix);
-                subconfig.setProperty(subpropertyName, config.getProperty(name));
+        Enumeration<String> names = (Enumeration<String>) config.propertyNames();
+        Properties config = new Properties();
+        while (names.hasMoreElements()) {
+            String propertyName = names.nextElement();
+            if (isSubproperty(propertyName, subprefix)) {
+                String subPropertyName = getSubproperty(propertyName, subprefix);
+                config.setProperty(subPropertyName, this.config.getProperty(propertyName));
             }
         }
-        if (subconfig == null) {
+        if (config == null) {
             return null;
         } else if (prefix != null) {
-            return new ConfigUtils(subconfig, prefix + "." + subprefix);
+            return new ConfigUtils(config, prefix + "." + subprefix);
         } else {
-            return new ConfigUtils(subconfig, subprefix);
+            return new ConfigUtils(config, subprefix);
         }
     }
 
@@ -71,12 +68,12 @@ public final class ConfigUtils {
         return fullPropertyName.substring(subprefix.length() + 1);
     }
 
-    public String getStringPropertyWithDefault(String propertyName, String defaultValue) {
-        String propertyValue = config.getProperty(propertyName);
-        if (propertyValue == null) {
-            return defaultValue;
+    public String getStringPropertyWithDefault(String propertyName, String defaultProperty) {
+        String property = config.getProperty(propertyName);
+        if (property == null) {
+            return defaultProperty;
         } else {
-            return propertyValue;
+            return property;
         }
     }
 

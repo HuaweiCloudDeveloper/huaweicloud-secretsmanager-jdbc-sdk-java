@@ -84,7 +84,7 @@ public abstract class HWCsmsDriver implements Driver {
         String secretName = "";
         if (!acceptsURL(url)) {
             return null;
-        } else {// 如果地址格式正确，就替换SCHEME字段
+        } else {
             unWrappedUrl = unWrapUrl(url);
             if (!ObjectUtils.isEmpty(info) && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
                 secretName = info.getProperty(Constants.INFO_USER);
@@ -131,14 +131,14 @@ public abstract class HWCsmsDriver implements Driver {
 
     private Driver getWrappedDriver() {
         loadRealDriver();
-        Enumeration<Driver> drivers = DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            Driver driver = drivers.nextElement();
+        Enumeration<Driver> allDrivers = DriverManager.getDrivers();
+        while (allDrivers.hasMoreElements()) {
+            Driver driver = allDrivers.nextElement();
             if (driver.getClass().getName().equals(getRealDriverClass())) {
                 return driver;
             }
         }
-        throw new IllegalStateException("Can not find wrapped driver");
+        throw new IllegalStateException("get wrapped driver fail.");
     }
 
     private void loadRealDriver() {
@@ -158,13 +158,12 @@ public abstract class HWCsmsDriver implements Driver {
     }
 
     public String unWrapUrl(String url) {
+        if(StringUtils.isEmpty(url)){
+            throw new IllegalArgumentException("url is null.");
+        }
         return url.replaceFirst(SCHEME, "jdbc");
     }
 
-    @Override
-    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        return new DriverPropertyInfo[0];
-    }
 
     @Override
     public int getMajorVersion() {
@@ -172,8 +171,8 @@ public abstract class HWCsmsDriver implements Driver {
     }
 
     @Override
-    public int getMinorVersion() {
-        return getWrappedDriver().getMinorVersion();
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+        return getWrappedDriver().getPropertyInfo(unWrapUrl(url),info);
     }
 
     @Override
@@ -185,4 +184,11 @@ public abstract class HWCsmsDriver implements Driver {
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return getWrappedDriver().getParentLogger();
     }
+
+    @Override
+    public int getMinorVersion() {
+        return getWrappedDriver().getMinorVersion();
+    }
+
+
 }
