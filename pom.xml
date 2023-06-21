@@ -25,12 +25,12 @@
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-csms</artifactId>
-            <version>3.2.42</version>
+            <version>3.1.41</version>
         </dependency>
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-kms</artifactId>
-            <version>3.0.99</version>
+            <version>3.1.44</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
