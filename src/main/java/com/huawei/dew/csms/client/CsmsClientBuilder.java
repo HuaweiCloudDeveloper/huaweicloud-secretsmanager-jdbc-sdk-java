@@ -31,7 +31,6 @@ public class CsmsClientBuilder {
                 .withIdpId(configUtils.getStringPropertyWithDefault(Constants.IDP_ID, null))
                 .withIdTokenFile(configUtils.getStringPropertyWithDefault(Constants.ID_TOKEN_FILE, null))
                 .withIamEndpoint(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_IAM_ENDPOINT, null))
-//                .withDerivedPredicate()
                 .withProjectId(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_PROJECT_ID, null));
         //http使用默认配置
         httpConfig = HttpConfig.getDefaultHttpConfig();
