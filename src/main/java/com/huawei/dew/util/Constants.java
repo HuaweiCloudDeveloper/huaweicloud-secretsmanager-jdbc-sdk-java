@@ -16,6 +16,13 @@ public interface Constants {
 
     String CREDENTIAL_SK = "credential.sk";
 
+    String SECURITY_TOKEN = "security.token";
+
+    String IDP_ID = "Idp.Id";
+
+    String ID_TOKEN_FILE = "id.token.file";
+
+
     String CREDENTIAL_PROJECT_ID = "credential.projectId";
 
     String CREDENTIAL_IAM_ENDPOINT = "credential.iam";
@@ -34,5 +41,5 @@ public interface Constants {
 
     String KMS_ENDPOINT = "kms.endpoint";
 
-    //数据库连接参数
+
 }

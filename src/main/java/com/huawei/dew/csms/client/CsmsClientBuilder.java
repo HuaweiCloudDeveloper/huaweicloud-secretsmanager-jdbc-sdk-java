@@ -17,6 +17,7 @@ public class CsmsClientBuilder {
 
     private static List<String> KmsEndpoints;
 
+
     /**
      * 读取配置文件，初始化参数
      */
@@ -26,8 +27,12 @@ public class CsmsClientBuilder {
         credential = new BasicCredentials()
                 .withAk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_AK, null))
                 .withSk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_SK, null))
-                .withProjectId(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_PROJECT_ID, null))
-                .withIamEndpoint(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_IAM_ENDPOINT, null));
+                .withSecurityToken(configUtils.getStringPropertyWithDefault(Constants.SECURITY_TOKEN, null))
+                .withIdpId(configUtils.getStringPropertyWithDefault(Constants.IDP_ID, null))
+                .withIdTokenFile(configUtils.getStringPropertyWithDefault(Constants.ID_TOKEN_FILE, null))
+                .withIamEndpoint(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_IAM_ENDPOINT, null))
+//                .withDerivedPredicate()
+                .withProjectId(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_PROJECT_ID, null));
         //http使用默认配置
         httpConfig = HttpConfig.getDefaultHttpConfig();
         //网络代理
@@ -37,13 +42,8 @@ public class CsmsClientBuilder {
                 .withProxyPassword(configUtils.getStringPropertyWithDefault(Constants.PROXY_PASSWORD, null))
                 .withTimeout(configUtils.getIntPropertyWithDefault(Constants.TIMEOUT, 10))
                 .withIgnoreSSLVerification("true".equals(configUtils.getStringPropertyWithDefault(Constants.IGNORE_SSL, "fasle")));
-        //配置是否忽略SSL证书校验
-        httpConfig.withIgnoreSSLVerification(true);
-        //设置超时时间
-        httpConfig.withTimeout(10);
-        //客户端初始化
-        String[] kmsEndpointList = configUtils.getStringPropertyWithDefault(Constants.KMS_ENDPOINT, null).split(",");
-        KmsEndpoints = Arrays.asList(kmsEndpointList);
+
+        KmsEndpoints = Arrays.asList(configUtils.getStringPropertyWithDefault(Constants.KMS_ENDPOINT, null).split(","));
     }
 
     /**
