@@ -15,7 +15,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public abstract class HwCsmsDriver implements Driver {
+public abstract class HWSecretsManagerDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
@@ -31,17 +31,15 @@ public abstract class HwCsmsDriver implements Driver {
 
     protected abstract String getRealDriverClass();
 
-    protected abstract String contactUrl(String host, String port, String dbName);
-
     protected abstract boolean isAuthError(Exception e);
 
     public abstract String getPropertySubPrefix();
 
-    public HwCsmsDriver() {
+    public HWSecretsManagerDriver() {
         this(SecretCacheClientBuilder.getClient());
     }
 
-    public HwCsmsDriver(SecretCacheClient secretCacheClient) {
+    public HWSecretsManagerDriver(SecretCacheClient secretCacheClient) {
         this.secretCacheClient = secretCacheClient;
 
         setConfig();
@@ -57,7 +55,7 @@ public abstract class HwCsmsDriver implements Driver {
         this.realDriverClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealDriverClass());
     }
 
-    public static void registerDriver(HwCsmsDriver driver) {
+    public static void registerDriver(HWSecretsManagerDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
@@ -65,7 +63,7 @@ public abstract class HwCsmsDriver implements Driver {
         }
     }
 
-    private static void shutdown(HwCsmsDriver driver) {
+    private static void shutdown(HWSecretsManagerDriver driver) {
         try {
             driver.secretCacheClient.close();
         } catch (IOException e) {
@@ -77,7 +75,7 @@ public abstract class HwCsmsDriver implements Driver {
     public Connection connect(String url, Properties info) throws SQLException {
 
         /**
-         * url表示数据库地址，因为我们的凭据保存的RDS信息只有id，并没有地址。
+         * url表示数据库地址
          * info键值对，键为"secretName"，值为凭据名。
          */
         String unWrappedUrl = "";
@@ -152,7 +150,7 @@ public abstract class HwCsmsDriver implements Driver {
     @Override
     public boolean acceptsURL(String url) throws SQLException {
         if (!url.startsWith(SCHEME) || StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("JDBC URL is malformed. Must use scheme, \"" + SCHEME + "\".");
+            throw new IllegalArgumentException("JDBC URL is invalid. Must be start with \"" + SCHEME + "\".");
         }
         return getWrappedDriver().acceptsURL(unWrapUrl(url));
     }

@@ -41,5 +41,9 @@ public interface Constants {
 
     String KMS_ENDPOINT = "kms.endpoint";
 
+    String COMMON_TYPE = "COMMON";
+
+    String RDS_TYPE = "RDS";
+
 
 }

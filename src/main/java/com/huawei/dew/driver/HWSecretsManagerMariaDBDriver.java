@@ -4,20 +4,20 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HwCsmsMariaDBDriver extends HwCsmsDriver {
+public class HWSecretsManagerMariaDBDriver extends HWSecretsManagerDriver {
     public static final int LOGIN_FAILED_CODE = 1045;
 
     public static final String SUBPREFIX = "mariadb";
 
     static {
-        HwCsmsMariaDBDriver.registerDriver(new HwCsmsMariaDBDriver());
+        HWSecretsManagerMariaDBDriver.registerDriver(new HWSecretsManagerMariaDBDriver());
     }
 
-    public HwCsmsMariaDBDriver() {
+    public HWSecretsManagerMariaDBDriver() {
         super();
     }
 
-    public HwCsmsMariaDBDriver(SecretCacheClient secretCacheClient) {
+    public HWSecretsManagerMariaDBDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
@@ -29,11 +29,6 @@ public class HwCsmsMariaDBDriver extends HwCsmsDriver {
     @Override
     public String getPropertySubPrefix() {
         return SUBPREFIX;
-    }
-
-    @Override
-    protected String contactUrl(String host, String port, String dbName) {
-        return null;
     }
 
     @Override

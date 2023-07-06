@@ -4,21 +4,21 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HwCsmsMysqlDriver extends HwCsmsDriver {
+public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
 
     public static final int LOGIN_FAILED_CODE = 1045;
 
     public static final String SUBPREFIX = "mysql";
 
     static {
-        HwCsmsMysqlDriver.registerDriver(new HwCsmsMysqlDriver());
+        HWSecretsManagerMysqlDriver.registerDriver(new HWSecretsManagerMysqlDriver());
     }
 
-    public HwCsmsMysqlDriver() {
+    public HWSecretsManagerMysqlDriver() {
         super();
     }
 
-    public HwCsmsMysqlDriver(SecretCacheClient secretCacheClient) {
+    public HWSecretsManagerMysqlDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
@@ -30,11 +30,6 @@ public class HwCsmsMysqlDriver extends HwCsmsDriver {
     @Override
     public String getPropertySubPrefix() {
         return SUBPREFIX;
-    }
-
-    @Override
-    protected String contactUrl(String host, String port, String dbName) {
-        return null;
     }
 
     @Override

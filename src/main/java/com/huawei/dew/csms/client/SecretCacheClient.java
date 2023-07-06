@@ -5,6 +5,7 @@ import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.csms.cache.CacheStoreStrategy;
 import com.huawei.dew.csms.cache.RefreshStrategy;
 import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.util.Constants;
 import com.huaweicloud.sdk.core.utils.StringUtils;
 import com.huaweicloud.sdk.csms.v1.CsmsClient;
 import com.huaweicloud.sdk.csms.v1.model.*;
@@ -108,9 +109,8 @@ public class SecretCacheClient implements Closeable {
         ShowSecretVersionResponse secretVersionResponse = csmsClient.showSecretVersion(showSecretVersionRequest);
         Version versionInfo = secretVersionResponse.getVersion();
 
-
-        return new SecretInfo(secret.getId(), secretName, versionId, versionInfo.getSecretString(), secret.getSecretType(), versionInfo.getVersionMetadata().getCreateTime()
-                , secret.getAutoRotation(), secret.getRotationConfig(), secret.getRotationPeriod(), secret.getUpdateTime());
+        return new SecretInfo(secret.getId(), secretName, versionId, versionInfo.getSecretString(), Constants.COMMON_TYPE, versionInfo.getVersionMetadata().getCreateTime()
+                , null, null, null, secret.getUpdateTime());
     }
 
     public Boolean refreshNow(final String secretName) throws InterruptedException {

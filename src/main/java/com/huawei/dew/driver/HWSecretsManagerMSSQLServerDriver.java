@@ -4,20 +4,20 @@ import com.huawei.dew.csms.client.SecretCacheClient;
 
 import java.sql.SQLException;
 
-public class HwCsmsMSSQLServerDriver extends HwCsmsDriver {
+public class HWSecretsManagerMSSQLServerDriver extends HWSecretsManagerDriver {
     public static final int LOGIN_FAILED = 1045;
 
     public static final String SUBPREFIX = "sqlserver";
 
     static {
-        HwCsmsMSSQLServerDriver.registerDriver(new HwCsmsMSSQLServerDriver());
+        HWSecretsManagerMSSQLServerDriver.registerDriver(new HWSecretsManagerMSSQLServerDriver());
     }
 
-    public HwCsmsMSSQLServerDriver() {
+    public HWSecretsManagerMSSQLServerDriver() {
         super();
     }
 
-    public HwCsmsMSSQLServerDriver(SecretCacheClient secretCacheClient) {
+    public HWSecretsManagerMSSQLServerDriver(SecretCacheClient secretCacheClient) {
         super(secretCacheClient);
     }
 
@@ -29,11 +29,6 @@ public class HwCsmsMSSQLServerDriver extends HwCsmsDriver {
     @Override
     public String getPropertySubPrefix() {
         return SUBPREFIX;
-    }
-
-    @Override
-    protected String contactUrl(String host, String port, String dbName) {
-        return null;
     }
 
     @Override
