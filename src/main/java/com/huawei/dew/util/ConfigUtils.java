@@ -26,7 +26,7 @@ public final class ConfigUtils {
                 newConfig.load(configInput);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new WrappedException("load config failed.");
         }
         return newConfig;
     }

@@ -63,7 +63,7 @@ public class SecretInfoCache implements Serializable, Cloneable {
     }
 
     @Override
-    protected SecretInfoCache clone() throws CloneNotSupportedException {
+    public SecretInfoCache clone() throws CloneNotSupportedException {
         SecretInfoCache secretInfoCache;
         secretInfoCache = (SecretInfoCache) super.clone();
         secretInfoCache.secretInfo = secretInfo.clone();
