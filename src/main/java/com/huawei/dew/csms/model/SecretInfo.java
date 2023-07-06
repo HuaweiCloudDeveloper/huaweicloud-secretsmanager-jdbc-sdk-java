@@ -4,25 +4,25 @@ package com.huawei.dew.csms.model;
 import java.io.Serializable;
 
 public class SecretInfo implements Serializable, Cloneable {
-    //凭据ID
+
     private String id;
-    //凭据名
+
     private String name;
-    //凭据版本
+
     private String versionId;
-    //凭据值，键值对
+
     private String value;
-    //凭据类型
+
     private String type;
 
     private Long createTime;
-    //是否开启自动轮转
+
     private Boolean autoRotation;
-    //轮转配置
+
     private String rotationConfig;
-    //轮转周期时间
+
     private String rotationPeriod;
-    //轮转发生的时间
+
     private Long lastRotationTime;
 
     private String enterPriseProjectId;

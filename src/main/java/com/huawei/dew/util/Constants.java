@@ -10,8 +10,6 @@ public interface Constants {
 
     String PASSWORD = "password";
 
-    //凭据客户端相关参数
-
     String CREDENTIAL_AK = "credential.ak";
 
     String CREDENTIAL_SK = "credential.sk";

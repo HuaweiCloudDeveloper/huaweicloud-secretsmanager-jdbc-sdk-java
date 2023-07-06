@@ -10,7 +10,7 @@ import com.huaweicloud.sdk.csms.v1.CsmsClient;
 import java.util.Arrays;
 import java.util.List;
 
-public class CsmsClientBuilder {
+public class SecretsManagerClientBuilder {
     private static ICredential credential;
 
     private static HttpConfig httpConfig;
@@ -22,7 +22,7 @@ public class CsmsClientBuilder {
      * 读取配置文件，初始化参数
      */
     public static void init() {
-        //配置认证信息
+
         ConfigUtils configUtils = ConfigUtils.loadConfig();
         credential = new BasicCredentials()
                 .withAk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_AK, null))
@@ -32,9 +32,9 @@ public class CsmsClientBuilder {
                 .withIdTokenFile(configUtils.getStringPropertyWithDefault(Constants.ID_TOKEN_FILE, null))
                 .withIamEndpoint(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_IAM_ENDPOINT, null))
                 .withProjectId(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_PROJECT_ID, null));
-        //http使用默认配置
+
         httpConfig = HttpConfig.getDefaultHttpConfig();
-        //网络代理
+
         httpConfig.withProxyHost(configUtils.getStringPropertyWithDefault(Constants.PROXY_HOST, null))
                 .withProxyPort(configUtils.getIntPropertyWithDefault(Constants.PROXY_PORT, 8080))
                 .withProxyUsername(configUtils.getStringPropertyWithDefault(Constants.PROXY_USER, null))
@@ -51,7 +51,6 @@ public class CsmsClientBuilder {
      * @return CsmsClient
      */
     public static CsmsClient build() {
-        //配置认证信息
         init();
         CsmsClient csmsClient = CsmsClient.newBuilder()
                 .withCredential(credential)

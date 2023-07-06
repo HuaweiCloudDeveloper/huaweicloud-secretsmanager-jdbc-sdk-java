@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
-public class SecretCacheClient implements Closeable {
+public class SecretsManagerCacheClient implements Closeable {
 
     private static final long DEFAULT_TTL = 60 * 60 * 1000;
 
@@ -25,7 +25,7 @@ public class SecretCacheClient implements Closeable {
     private final Map<String, ScheduledFuture> scheduledFutureMap = new ConcurrentHashMap<>();
     private final Map<String, Long> nextExecuteTimeMap = new ConcurrentHashMap<>();
 
-    protected CsmsClientBuilder csmsClientBuilder;
+    protected SecretsManagerClientBuilder secretsManagerClientBuilder;
 
     protected CsmsClient csmsClient;
 
@@ -34,10 +34,10 @@ public class SecretCacheClient implements Closeable {
     protected RefreshStrategy refreshStrategy;
 
     protected SecretCacheHook secretCacheHook;
-    //记录每个凭据的有效时间
+
     protected Map<String, Long> secretTTLMap = new HashMap<>();
 
-    public SecretCacheClient() {
+    public SecretsManagerCacheClient() {
     }
 
     protected void init() {
@@ -46,7 +46,6 @@ public class SecretCacheClient implements Closeable {
             SecretInfo secretInfo = getSecretInfo(secretName);
             refresh(secretName, secretInfo);
         }
-        //开始监控刷新
         new Thread(new MonitorRefreshTask()).start();
     }
 
@@ -61,14 +60,12 @@ public class SecretCacheClient implements Closeable {
             throw new IllegalArgumentException("secretName must not be null!");
         }
         SecretInfoCache secretInfoCache = this.cacheStoreStrategy.getSecretInfoCache(secretName);
-        //检查凭据缓存是否可用
         if (checkSecretInfoCache(secretInfoCache)) {
             return secretCacheHook.getInfo(secretInfoCache);
         } else {
-            //如果缓存凭据不可用，那么调用接口重新获取凭据值
+
             synchronized (secretName.intern()) {
                 SecretInfo secretInfo = getSecretByAPI(secretName);
-                //刷新，将新的凭据存入缓存中
                 refresh(secretName, secretInfo);
                 return secretInfo;
             }
@@ -83,12 +80,12 @@ public class SecretCacheClient implements Closeable {
         if (null == secretInfo || StringUtils.isEmpty(secretInfo.getValue())) {
             return false;
         }
-        //获取凭据的轮转时间，如果异常就设置为默认TTL
+
         long period = refreshStrategy.parsePeriod(secretInfo);
         if (period < 0) {
             period = secretTTLMap.getOrDefault(secretInfo.getName(), DEFAULT_TTL);
         }
-        //如果当前时间减去上一次刷新时间小于等于轮转时间，则凭据已经过期了
+
         if (System.currentTimeMillis() - secretInfoCache.getRefreshTimeStamp() <= period) {
             return false;
         }
@@ -173,7 +170,6 @@ public class SecretCacheClient implements Closeable {
     private void addRefreshTask(String secretName, Runnable runnable) {
         SecretInfoCache secretInfoCache = cacheStoreStrategy.getSecretInfoCache(secretName);
         long nextRefreshTime = refreshStrategy.parseNextRefreshTime(secretInfoCache);
-        //如果缓存中取出来的下次刷新时间异常，则以凭据默认有效时间为轮转周期来计算下次刷新时间
         if (nextRefreshTime <= 0) {
             long refreshTimeStamp = secretInfoCache.getRefreshTimeStamp();
             nextRefreshTime = refreshStrategy.getNextRefreshTime(secretTTLMap.getOrDefault(secretName, DEFAULT_TTL), refreshTimeStamp);
@@ -252,7 +248,6 @@ public class SecretCacheClient implements Closeable {
                     }
                 }
                 try {
-                    //监控间隔时间
                     Thread.sleep(5 * 60 * 1000);
                 } catch (Throwable e) {
                     System.out.println("线程sleep异常");

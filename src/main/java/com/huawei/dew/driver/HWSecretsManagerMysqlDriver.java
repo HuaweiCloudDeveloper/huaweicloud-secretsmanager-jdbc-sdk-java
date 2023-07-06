@@ -1,6 +1,6 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretCacheClient;
+import com.huawei.dew.csms.client.SecretsManagerCacheClient;
 
 import java.sql.SQLException;
 
@@ -18,8 +18,8 @@ public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
         super();
     }
 
-    public HWSecretsManagerMysqlDriver(SecretCacheClient secretCacheClient) {
-        super(secretCacheClient);
+    public HWSecretsManagerMysqlDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
+        super(secretsManagerCacheClient);
     }
 
     @Override

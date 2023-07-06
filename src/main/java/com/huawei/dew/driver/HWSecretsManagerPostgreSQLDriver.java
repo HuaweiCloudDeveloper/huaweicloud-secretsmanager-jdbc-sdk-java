@@ -1,6 +1,6 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretCacheClient;
+import com.huawei.dew.csms.client.SecretsManagerCacheClient;
 
 import java.sql.SQLException;
 
@@ -17,8 +17,8 @@ public class HWSecretsManagerPostgreSQLDriver extends HWSecretsManagerDriver {
         super();
     }
 
-    public HWSecretsManagerPostgreSQLDriver(SecretCacheClient secretCacheClient) {
-        super(secretCacheClient);
+    public HWSecretsManagerPostgreSQLDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
+        super(secretsManagerCacheClient);
     }
 
     @Override

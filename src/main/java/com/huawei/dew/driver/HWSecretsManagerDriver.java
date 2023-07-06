@@ -1,8 +1,8 @@
 package com.huawei.dew.driver;
 
 import com.google.gson.Gson;
-import com.huawei.dew.csms.client.SecretCacheClient;
-import com.huawei.dew.csms.client.SecretCacheClientBuilder;
+import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.SecretsManagerCacheClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.util.ConfigUtils;
 import com.huawei.dew.util.Constants;
@@ -25,7 +25,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private static final int RETRY_TIMES = 3;
 
-    protected SecretCacheClient secretCacheClient;
+    protected SecretsManagerCacheClient secretsManagerCacheClient;
 
     private ConfigUtils configUtils;
 
@@ -36,11 +36,11 @@ public abstract class HWSecretsManagerDriver implements Driver {
     public abstract String getPropertySubPrefix();
 
     public HWSecretsManagerDriver() {
-        this(SecretCacheClientBuilder.getClient());
+        this(SecretsManagerCacheClientBuilder.getClient());
     }
 
-    public HWSecretsManagerDriver(SecretCacheClient secretCacheClient) {
-        this.secretCacheClient = secretCacheClient;
+    public HWSecretsManagerDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
+        this.secretsManagerCacheClient = secretsManagerCacheClient;
 
         setConfig();
         registerDriver(this);
@@ -59,13 +59,13 @@ public abstract class HWSecretsManagerDriver implements Driver {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
-            throw new RuntimeException(String.format("Can not register %s!", driver.getClass().getSimpleName()), sqlException);
+            throw new RuntimeException("Can not register!", sqlException);
         }
     }
 
     private static void shutdown(HWSecretsManagerDriver driver) {
         try {
-            driver.secretCacheClient.close();
+            driver.secretsManagerCacheClient.close();
         } catch (IOException e) {
             throw new RuntimeException("SecretCacheClient close fail", e);
         }
@@ -98,23 +98,22 @@ public abstract class HWSecretsManagerDriver implements Driver {
         Properties userInfo = new Properties();
         while (retryTimes++ <= RETRY_TIMES) {
             try {
-                SecretInfo secretInfo = secretCacheClient.getSecretInfo(secretName);
-                //获取凭据值
+                SecretInfo secretInfo = secretsManagerCacheClient.getSecretInfo(secretName);
                 String secretValue = secretInfo.getValue();
                 Properties secretProperties = new Gson().fromJson(secretValue, Properties.class);
-                //构建了创建连接时需要的info，包含用户名和密码
+
                 userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
                 userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
             } catch (Exception e) {
-                throw new RuntimeException("Get user info from CSMS fail", e);
+                throw new RuntimeException("Get user info fail", e);
             }
             try {
                 return getWrappedDriver().connect(url, userInfo);
             } catch (SQLException e) {
                 if (isAuthError(e)) {
                     try {
-                        if (!secretCacheClient.refreshNow(secretName)) {
-                            throw e;
+                        if (!secretsManagerCacheClient.refreshNow(secretName)) {
+                            throw new RuntimeException("Refresh cache fail");
                         }
                     } catch (InterruptedException ex) {
                         throw new RuntimeException("Refresh cache fail", ex);
