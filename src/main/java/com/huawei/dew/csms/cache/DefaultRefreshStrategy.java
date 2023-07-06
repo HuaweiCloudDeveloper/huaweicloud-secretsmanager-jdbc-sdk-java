@@ -14,7 +14,7 @@ public class DefaultRefreshStrategy implements RefreshStrategy {
     /**
      * 凭据轮转
      */
-    private final String rotationTimeName = "rotation_period";
+    private final static String rotationTimeName = "rotation_period";
 
     @Override
     public long getNextRefreshTime(long period, long lastRotationTime) {

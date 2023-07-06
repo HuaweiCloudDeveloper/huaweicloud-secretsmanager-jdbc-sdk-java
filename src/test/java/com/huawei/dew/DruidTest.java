@@ -22,6 +22,8 @@ public class DruidTest {
         while (resultSet.next()){
             System.out.println(resultSet.getString("uuid"));
         }
+        resultSet.close();
+        statement.close();
         connection.close();
     }
 }

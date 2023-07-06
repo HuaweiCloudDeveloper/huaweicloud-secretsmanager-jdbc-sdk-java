@@ -24,6 +24,8 @@ public class C3p0Test {
         while (resultSet.next()) {
             System.out.println(resultSet.getString("uuid"));
         }
+        resultSet.close();
+        statement.close();
         connection.close();
     }
 }

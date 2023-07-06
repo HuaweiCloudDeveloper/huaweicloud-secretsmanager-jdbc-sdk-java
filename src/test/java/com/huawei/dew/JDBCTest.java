@@ -21,5 +21,8 @@ public class JDBCTest {
             String alias = rs.getString(4);
             System.out.printf("uuid: %s, state: %d, alias: %s \n", uuid,state,alias);
         }
+        rs.close();
+        statement.close();
+        connect.close();
     }
 }

@@ -19,16 +19,15 @@ public final class ConfigUtils {
 
     private static Properties loadConfigFromFile(String fileName) {
         Properties newConfig = new Properties(System.getProperties());
-        InputStream configFile;
-
+        InputStream configInput;
         try {
-            configFile = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
-            if (configFile != null) {
-                newConfig.load(configFile);
-                configFile.close();
+            configInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+            if (configInput != null) {
+                newConfig.load(configInput);
             }
+            configInput.close();
         } catch (IOException e) {
-            throw new RuntimeException("loading config from " + CONFIG_FILE + " failed.");
+            throw new RuntimeException("loading config from failed.");
         }
         return newConfig;
     }
@@ -41,22 +40,22 @@ public final class ConfigUtils {
         return loadConfigFile(CONFIG_FILE);
     }
 
-    public ConfigUtils getSubconfig(String subprefix) {
+    public ConfigUtils getSubconfig(String subPrefix) {
         Enumeration<String> names = (Enumeration<String>) config.propertyNames();
-        Properties config = new Properties();
+        Properties properties = new Properties();
         while (names.hasMoreElements()) {
             String propertyName = names.nextElement();
-            if (isSubproperty(propertyName, subprefix)) {
-                String subPropertyName = getSubproperty(propertyName, subprefix);
-                config.setProperty(subPropertyName, this.config.getProperty(propertyName));
+            if (isSubproperty(propertyName, subPrefix)) {
+                String subPropertyName = getSubproperty(propertyName, subPrefix);
+                properties.setProperty(subPropertyName, this.config.getProperty(propertyName));
             }
         }
-        if (config == null) {
+        if (properties == null) {
             return null;
         } else if (prefix != null) {
-            return new ConfigUtils(config, prefix + "." + subprefix);
+            return new ConfigUtils(properties, prefix + "." + subPrefix);
         } else {
-            return new ConfigUtils(config, subprefix);
+            return new ConfigUtils(properties, subPrefix);
         }
     }
 

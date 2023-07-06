@@ -37,9 +37,6 @@ public class SecretsManagerCacheClient implements Closeable {
 
     protected Map<String, Long> secretTTLMap = new HashMap<>();
 
-    public SecretsManagerCacheClient() {
-    }
-
     protected void init() {
         cacheStoreStrategy.init();
         for (String secretName : secretTTLMap.keySet()) {
@@ -228,21 +225,18 @@ public class SecretsManagerCacheClient implements Closeable {
                         SecretInfoCache secretInfoCache = cacheStoreStrategy.getSecretInfoCache(secretName);
                         if (null != secretInfoCache) {
                             Long nextRefreshTime = nextExecuteTimeMap.get(secretName);
-                            //下次刷新时间加上最大等待时间
                             if (System.currentTimeMillis() > nextRefreshTime + 10 * 60 * 1000L) {
-                                System.out.println("凭据过期，执行刷新任务");
                                 try {
                                     refreshNow(secretName);
                                 } catch (InterruptedException e) {
-                                    System.out.println("刷新任务异常");
+                                    throw new RuntimeException("Refresh secret failed.");
                                 }
                             }
                         } else {
-                            System.out.println("此凭据名对应的凭据缓存找不到，执行刷新任务");
                             try {
                                 refreshNow(secretName);
                             } catch (InterruptedException e) {
-                                System.out.println("刷新任务异常");
+                                throw new RuntimeException("Refresh secret failed.");
                             }
                         }
                     }
@@ -250,7 +244,7 @@ public class SecretsManagerCacheClient implements Closeable {
                 try {
                     Thread.sleep(5 * 60 * 1000);
                 } catch (Throwable e) {
-                    System.out.println("线程sleep异常");
+                    throw new RuntimeException("Thread sleep abnormal.");
                 }
             }
         }

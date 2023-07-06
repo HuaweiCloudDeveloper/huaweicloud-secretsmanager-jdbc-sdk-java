@@ -47,12 +47,8 @@ public class SecretInfo implements Serializable, Cloneable {
 
 
     @Override
-    public SecretInfo clone() {
-        try {
-            return (SecretInfo) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+    public SecretInfo clone() throws CloneNotSupportedException {
+        return (SecretInfo) super.clone();
     }
 
     @Override

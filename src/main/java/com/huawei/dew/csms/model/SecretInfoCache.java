@@ -68,7 +68,7 @@ public class SecretInfoCache implements Serializable, Cloneable {
         try {
             secretInfoCache = (SecretInfoCache) super.clone();
         } catch (CloneNotSupportedException exception) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("Clone secretInfo failed.");
         }
         secretInfoCache.secretInfo = secretInfo.clone();
         return secretInfoCache;

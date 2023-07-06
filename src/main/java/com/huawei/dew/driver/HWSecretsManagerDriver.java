@@ -21,7 +21,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private static final String PROPERTY_PREFIX = "drivers";
 
-    private String realDriverClass;
+    private static String realDriverClass;
 
     private static final int RETRY_TIMES = 3;
 
@@ -49,17 +49,17 @@ public abstract class HWSecretsManagerDriver implements Driver {
     private void setConfig() {
         this.configUtils = ConfigUtils.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
         if (configUtils == null) {
-            this.realDriverClass = getRealDriverClass();
+            realDriverClass = getRealDriverClass();
             return;
         }
-        this.realDriverClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealDriverClass());
+        realDriverClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealDriverClass());
     }
 
     public static void registerDriver(HWSecretsManagerDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
-            throw new RuntimeException("Can not register!", sqlException);
+            throw new RuntimeException("Can not register!");
         }
     }
 
@@ -67,7 +67,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
         try {
             driver.secretsManagerCacheClient.close();
         } catch (IOException e) {
-            throw new RuntimeException("SecretCacheClient close fail", e);
+            throw new RuntimeException("SecretCacheClient close fail");
         }
     }
 
@@ -94,9 +94,8 @@ public abstract class HWSecretsManagerDriver implements Driver {
     }
 
     public Connection connectWithSecret(String url, String secretName) throws SQLException {
-        int retryTimes = 0;
         Properties userInfo = new Properties();
-        while (retryTimes++ <= RETRY_TIMES) {
+        for (int retryTimes = 0; retryTimes < RETRY_TIMES; retryTimes++) {
             try {
                 SecretInfo secretInfo = secretsManagerCacheClient.getSecretInfo(secretName);
                 String secretValue = secretInfo.getValue();
@@ -105,18 +104,16 @@ public abstract class HWSecretsManagerDriver implements Driver {
                 userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
                 userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
             } catch (Exception e) {
-                throw new RuntimeException("Get user info fail", e);
+                throw new RuntimeException("Get user info fail");
             }
             try {
                 return getWrappedDriver().connect(url, userInfo);
             } catch (SQLException e) {
                 if (isAuthError(e)) {
                     try {
-                        if (!secretsManagerCacheClient.refreshNow(secretName)) {
-                            throw new RuntimeException("Refresh cache fail");
-                        }
+                        secretsManagerCacheClient.refreshNow(secretName);
                     } catch (InterruptedException ex) {
-                        throw new RuntimeException("Refresh cache fail", ex);
+                        throw new RuntimeException("Refresh secrets fail");
                     }
                 }
                 throw e;
@@ -155,7 +152,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
     }
 
     public String unWrapUrl(String url) {
-        if(StringUtils.isEmpty(url)){
+        if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("url is null.");
         }
         return url.replaceFirst(SCHEME, "jdbc");
@@ -169,7 +166,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     @Override
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        return getWrappedDriver().getPropertyInfo(unWrapUrl(url),info);
+        return getWrappedDriver().getPropertyInfo(unWrapUrl(url), info);
     }
 
     @Override
