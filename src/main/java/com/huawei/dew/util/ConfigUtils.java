@@ -19,14 +19,14 @@ public final class ConfigUtils {
 
     private static Properties loadConfigFromFile(String fileName) {
         Properties newConfig = new Properties(System.getProperties());
-        try {
-            InputStream configInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        try (
+                InputStream configInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        ) {
             if (configInput != null) {
                 newConfig.load(configInput);
-                configInput.close();
             }
         } catch (IOException e) {
-            return null;
+            e.printStackTrace();
         }
         return newConfig;
     }

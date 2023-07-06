@@ -3,7 +3,7 @@ package com.huawei.dew.util;
 /**
  * @author q30037735
  */
-public class WrappedException extends RuntimeException{
+public class WrappedException extends RuntimeException {
     public WrappedException() {
         super();
     }
