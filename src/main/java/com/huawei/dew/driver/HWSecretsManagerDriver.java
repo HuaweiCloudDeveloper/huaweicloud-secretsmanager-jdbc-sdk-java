@@ -6,6 +6,7 @@ import com.huawei.dew.csms.client.SecretsManagerCacheClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.util.ConfigUtils;
 import com.huawei.dew.util.Constants;
+import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -71,7 +72,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
         try {
             driver.secretsManagerCacheClient.close();
         } catch (IOException e) {
-            throw new RuntimeException("SecretCacheClient close fail");
+            throw new WrappedException("SecretCacheClient close fail");
         }
     }
 
@@ -108,7 +109,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
                 userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
                 userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
             } catch (Exception e) {
-                throw new RuntimeException("Get user info fail");
+                throw new WrappedException("Get user info fail");
             }
             try {
                 return getWrappedDriver().connect(url, userInfo);
@@ -117,7 +118,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
                     try {
                         secretsManagerCacheClient.refreshNow(secretName);
                     } catch (InterruptedException ex) {
-                        throw new RuntimeException("Refresh secrets fail");
+                        throw new WrappedException("Refresh secrets fail");
                     }
                 }
                 throw e;

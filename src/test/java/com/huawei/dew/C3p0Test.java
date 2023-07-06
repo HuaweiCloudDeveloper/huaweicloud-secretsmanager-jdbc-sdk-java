@@ -1,5 +1,6 @@
 package com.huawei.dew;
 
+import com.huawei.dew.util.WrappedException;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class C3p0Test {
             statement.close();
             connection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new WrappedException(e);
         }
     }
 }

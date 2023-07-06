@@ -2,6 +2,7 @@ package com.huawei.dew.csms.client;
 
 import com.huawei.dew.util.ConfigUtils;
 import com.huawei.dew.util.Constants;
+import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.core.http.HttpConfig;
@@ -25,7 +26,7 @@ public class SecretsManagerClientBuilder {
 
         ConfigUtils configUtils = ConfigUtils.loadConfig();
         if (configUtils == null) {
-            throw new RuntimeException("loadConfig error. Config is null.");
+            throw new WrappedException("loadConfig error. Config is null.");
         }
         credential = new BasicCredentials()
                 .withAk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_AK, null))

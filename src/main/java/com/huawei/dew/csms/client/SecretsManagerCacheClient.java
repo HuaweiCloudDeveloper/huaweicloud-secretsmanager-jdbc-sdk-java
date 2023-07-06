@@ -6,6 +6,7 @@ import com.huawei.dew.csms.cache.CacheStoreStrategy;
 import com.huawei.dew.csms.cache.RefreshStrategy;
 import com.huawei.dew.csms.model.SecretInfoCache;
 import com.huawei.dew.util.Constants;
+import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
 import com.huaweicloud.sdk.csms.v1.CsmsClient;
 import com.huaweicloud.sdk.csms.v1.model.*;
@@ -229,14 +230,14 @@ public class SecretsManagerCacheClient implements Closeable {
                                 try {
                                     refreshNow(secretName);
                                 } catch (InterruptedException e) {
-                                    throw new RuntimeException("Refresh secret failed.");
+                                    throw new WrappedException("Refresh secret failed.");
                                 }
                             }
                         } else {
                             try {
                                 refreshNow(secretName);
                             } catch (InterruptedException e) {
-                                throw new RuntimeException("Refresh secret failed.");
+                                throw new WrappedException("Refresh secret failed.");
                             }
                         }
                     }
@@ -244,7 +245,7 @@ public class SecretsManagerCacheClient implements Closeable {
                 try {
                     Thread.sleep(5 * 60 * 1000);
                 } catch (Throwable e) {
-                    throw new RuntimeException("Thread sleep abnormal.");
+                    throw new WrappedException("Thread sleep abnormal.");
                 }
             }
         }

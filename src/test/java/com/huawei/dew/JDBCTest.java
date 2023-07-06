@@ -1,6 +1,7 @@
 package com.huawei.dew;
 
 import com.huawei.dew.driver.HWSecretsManagerMysqlDriver;
+import com.huawei.dew.util.WrappedException;
 import org.junit.Test;
 
 import java.sql.*;
@@ -12,6 +13,7 @@ public class JDBCTest {
         HWSecretsManagerMysqlDriver driver = new HWSecretsManagerMysqlDriver();
         Properties info = new Properties();
         info.put("user", "localdb");
+        Connection connection;
         try {
             Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info);
             Statement statement = connect.createStatement();
@@ -26,7 +28,7 @@ public class JDBCTest {
             statement.close();
             connect.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new WrappedException(e);
         }
     }
 }
