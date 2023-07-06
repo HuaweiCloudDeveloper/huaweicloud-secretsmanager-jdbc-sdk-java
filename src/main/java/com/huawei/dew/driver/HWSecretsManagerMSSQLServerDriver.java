@@ -22,7 +22,7 @@ public class HWSecretsManagerMSSQLServerDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected String getRealDriverClass() {
+    protected String getRealClass() {
         return "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     }
 

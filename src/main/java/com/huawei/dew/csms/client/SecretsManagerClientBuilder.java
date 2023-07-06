@@ -24,6 +24,9 @@ public class SecretsManagerClientBuilder {
     public static void init() {
 
         ConfigUtils configUtils = ConfigUtils.loadConfig();
+        if (configUtils == null) {
+            throw new RuntimeException("loadConfig error. Config is null.");
+        }
         credential = new BasicCredentials()
                 .withAk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_AK, null))
                 .withSk(configUtils.getStringPropertyWithDefault(Constants.CREDENTIAL_SK, null))

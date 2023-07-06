@@ -23,7 +23,7 @@ public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected String getRealDriverClass() {
+    protected String getRealClass() {
         return "com.mysql.cj.jdbc.Driver";
     }
 

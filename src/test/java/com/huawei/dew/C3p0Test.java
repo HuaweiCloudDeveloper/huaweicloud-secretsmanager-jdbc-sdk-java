@@ -11,21 +11,25 @@ import java.sql.Statement;
 
 public class C3p0Test {
     @Test
-    public void testC3p0() throws Exception {
+    public void testC3p0() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         Connection connection;
         System.out.println(dataSource.getDriverClass());
         System.out.println(dataSource.getUser());
         System.out.println(dataSource.getJdbcUrl());
-        connection = dataSource.getConnection();
+        try {
+            connection = dataSource.getConnection();
 
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select * from kekinfo");
-        while (resultSet.next()) {
-            System.out.println(resultSet.getString("uuid"));
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from kekinfo");
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("uuid"));
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        resultSet.close();
-        statement.close();
-        connection.close();
     }
 }

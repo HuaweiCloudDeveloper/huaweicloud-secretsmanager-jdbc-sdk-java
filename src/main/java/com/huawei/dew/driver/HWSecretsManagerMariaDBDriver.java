@@ -22,7 +22,7 @@ public class HWSecretsManagerMariaDBDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected String getRealDriverClass() {
+    protected String getRealClass() {
         return "org.mariadb.jdbc.Driver";
     }
 

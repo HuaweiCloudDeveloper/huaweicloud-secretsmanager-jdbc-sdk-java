@@ -22,7 +22,7 @@ public class HWSecretsManagerPostgreSQLDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected String getRealDriverClass() {
+    protected String getRealClass() {
         return "org.postgresql.Driver";
     }
 

@@ -26,7 +26,7 @@ public class HWSecretsManagerOracleDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected String getRealDriverClass() {
+    protected String getRealClass() {
         return "oracle.jdbc.OracleDriver";
     }
 

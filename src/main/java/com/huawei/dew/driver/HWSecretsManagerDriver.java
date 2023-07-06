@@ -10,7 +10,12 @@ import com.huaweicloud.sdk.core.utils.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -21,7 +26,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private static final String PROPERTY_PREFIX = "drivers";
 
-    private static String realDriverClass;
+    private String realClass;
 
     private static final int RETRY_TIMES = 3;
 
@@ -29,7 +34,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private ConfigUtils configUtils;
 
-    protected abstract String getRealDriverClass();
+    protected abstract String getRealClass();
 
     protected abstract boolean isAuthError(Exception e);
 
@@ -41,7 +46,6 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     public HWSecretsManagerDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
         this.secretsManagerCacheClient = secretsManagerCacheClient;
-
         setConfig();
         registerDriver(this);
     }
@@ -49,17 +53,17 @@ public abstract class HWSecretsManagerDriver implements Driver {
     private void setConfig() {
         this.configUtils = ConfigUtils.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
         if (configUtils == null) {
-            realDriverClass = getRealDriverClass();
-            return;
+            this.realClass = getRealClass();
+        }else {
+            this.realClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealClass());
         }
-        realDriverClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealDriverClass());
     }
 
     public static void registerDriver(HWSecretsManagerDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
-            throw new RuntimeException("Can not register!");
+            return;
         }
     }
 
@@ -128,7 +132,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
         Enumeration<Driver> allDrivers = DriverManager.getDrivers();
         while (allDrivers.hasMoreElements()) {
             Driver driver = allDrivers.nextElement();
-            if (driver.getClass().getName().equals(getRealDriverClass())) {
+            if (driver.getClass().getName().equals(realClass)) {
                 return driver;
             }
         }
@@ -137,9 +141,9 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private void loadRealDriver() {
         try {
-            Class.forName(getRealDriverClass());
+            Class.forName(this.realClass);
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Could not load real driver with name, \"" + getRealDriverClass() + "\".", e);
+            throw new IllegalStateException("Could not load real driver with name, \"" + realClass + "\".", e);
         }
     }
 

@@ -8,21 +8,25 @@ import java.util.Properties;
 
 public class JDBCTest {
     @Test
-    public void testMysqlDriver() throws SQLException {
+    public void testMysqlDriver() {
         HWSecretsManagerMysqlDriver driver = new HWSecretsManagerMysqlDriver();
         Properties info = new Properties();
-        info.put("user","localdb");
-        Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info);
-        Statement statement = connect.createStatement();
-        ResultSet rs = statement.executeQuery("select * from kekinfo");
-        while (rs.next()){
-            String uuid = rs.getString(1);
-            int state = rs.getInt(2);
-            String alias = rs.getString(4);
-            System.out.printf("uuid: %s, state: %d, alias: %s \n", uuid,state,alias);
+        info.put("user", "localdb");
+        try {
+            Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info);
+            Statement statement = connect.createStatement();
+            ResultSet rs = statement.executeQuery("select * from kekinfo");
+            while (rs.next()) {
+                String uuid = rs.getString(1);
+                int state = rs.getInt(2);
+                String alias = rs.getString(4);
+                System.out.printf("uuid: %s, state: %d, alias: %s \n", uuid, state, alias);
+            }
+            rs.close();
+            statement.close();
+            connect.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        rs.close();
-        statement.close();
-        connect.close();
     }
 }

@@ -7,10 +7,9 @@ import org.junit.Test;
 
 public class CsmsClientTest {
     @Test
-    public void testClient(){
+    public void testClient() {
         SecretsManagerCacheClient secretsManagerCacheClient = SecretsManagerCacheClientBuilder.getClient();
         SecretInfo secretInfo = secretsManagerCacheClient.getSecretInfo("mysql-test");
-
         System.out.println(secretInfo.toString());
     }
 }
