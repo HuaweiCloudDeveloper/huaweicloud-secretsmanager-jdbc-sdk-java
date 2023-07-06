@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
 
-    public static final int LOGIN_FAILED_CODE = 1045;
+    public static final int LOGIN_FAILED = 1045;
 
     public static final String SUBPREFIX = "mysql";
 
@@ -36,8 +36,8 @@ public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
     protected boolean isAuthError(Exception e) {
         if (e instanceof SQLException) {
             SQLException sqle = (SQLException) e;
-            int errorCode = sqle.getErrorCode();
-            return errorCode == LOGIN_FAILED_CODE;
+            int code = sqle.getErrorCode();
+            return code == LOGIN_FAILED;
         }
         return false;
     }
