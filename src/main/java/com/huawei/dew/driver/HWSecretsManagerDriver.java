@@ -8,7 +8,7 @@ import com.huawei.dew.util.ConfigUtils;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
-import org.apache.commons.lang3.ObjectUtils;
+
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -55,7 +55,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
         this.configUtils = ConfigUtils.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
         if (configUtils == null) {
             this.realClass = getRealClass();
-        }else {
+        } else {
             this.realClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealClass());
         }
     }
@@ -89,7 +89,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
             return null;
         } else {
             unWrappedUrl = unWrapUrl(url);
-            if (!ObjectUtils.isEmpty(info) && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
+            if (null != info && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
                 secretName = info.getProperty(Constants.INFO_USER);
                 return connectWithSecret(unWrappedUrl, secretName);
             } else {
