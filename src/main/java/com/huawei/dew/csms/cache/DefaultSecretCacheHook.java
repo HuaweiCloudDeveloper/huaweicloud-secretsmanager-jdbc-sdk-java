@@ -14,17 +14,12 @@ public class DefaultSecretCacheHook implements SecretCacheHook {
     }
 
     @Override
-    public SecretInfoCache covertToCache(SecretInfo secretInfo) {
+    public SecretInfoCache infoToCache(SecretInfo secretInfo) {
         return new SecretInfoCache(secretInfo, stage, System.currentTimeMillis());
     }
 
     @Override
-    public SecretInfo getInfo(SecretInfoCache secretInfoCache) {
+    public SecretInfo cacheToInfo(SecretInfoCache secretInfoCache) {
         return secretInfoCache.getSecretInfo();
-    }
-
-    @Override
-    public void close() throws IOException {
-
     }
 }

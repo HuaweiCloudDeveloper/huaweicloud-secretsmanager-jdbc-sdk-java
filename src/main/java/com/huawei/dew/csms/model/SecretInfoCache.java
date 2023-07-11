@@ -26,7 +26,7 @@ public class SecretInfoCache implements Serializable, Cloneable {
     }
 
     /**
-     * 根据指定的凭据，创建凭据缓存。设置凭据版本stage和？？？
+     * 根据指定的凭据，创建凭据缓存。设置凭据版本stage和刷新时间
      *
      * @param secretInfo
      * @param stage

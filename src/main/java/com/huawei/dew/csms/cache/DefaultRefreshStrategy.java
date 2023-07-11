@@ -9,15 +9,15 @@ import java.util.Map;
 
 public class DefaultRefreshStrategy implements RefreshStrategy {
 
-    private final static Gson GSON = new Gson();
+    private Gson GSON = new Gson();
 
     /**
-     * 凭据轮转
+     * 凭据上次轮转时间
      */
-    private final static String rotationTimeName = "rotation_period";
+    private final static String ROTATION_PERIOD = "rotation_period";
 
     @Override
-    public long getNextRefreshTime(long period, long lastRotationTime) {
+    public long getNextRotateTime(long period, long lastRotationTime) {
         long currentTimeMillis = System.currentTimeMillis();
         if (lastRotationTime + period > currentTimeMillis) {
             return lastRotationTime + period;
@@ -26,27 +26,22 @@ public class DefaultRefreshStrategy implements RefreshStrategy {
     }
 
     @Override
-    public long parseNextRefreshTime(SecretInfoCache secretInfoCache) {
+    public long parseNextRotateTime(SecretInfoCache secretInfoCache) {
         SecretInfo secretInfo = secretInfoCache.getSecretInfo();
         long period = parsePeriod(secretInfo);
         if (period <= 0) {
             return period;
         }
-        return getNextRefreshTime(period, secretInfoCache.getRefreshTimeStamp());
+        return getNextRotateTime(period, secretInfoCache.getRefreshTimeStamp());
     }
 
     @Override
     public long parsePeriod(SecretInfo secretInfo) {
         try {
             Map<String, Object> map = GSON.fromJson(secretInfo.getValue(), Map.class);
-            return ((Double) map.get(rotationTimeName)).longValue();
+            return ((Double) map.get(ROTATION_PERIOD)).longValue();
         } catch (Exception e) {
             return -1;
         }
-    }
-
-    @Override
-    public void close() throws IOException {
-
     }
 }

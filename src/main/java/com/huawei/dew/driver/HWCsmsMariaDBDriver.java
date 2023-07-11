@@ -1,24 +1,24 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWSecretsManagerMariaDBDriver extends HWSecretsManagerDriver {
+public class HWCsmsMariaDBDriver extends HWCsmsDriver {
     public static final int LOGIN_FAILED_CODE = 1045;
 
     public static final String SUBPREFIX = "mariadb";
 
     static {
-        HWSecretsManagerMariaDBDriver.registerDriver(new HWSecretsManagerMariaDBDriver());
+        HWCsmsMariaDBDriver.registerDriver(new HWCsmsMariaDBDriver());
     }
 
-    public HWSecretsManagerMariaDBDriver() {
+    public HWCsmsMariaDBDriver() {
         super();
     }
 
-    public HWSecretsManagerMariaDBDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        super(secretsManagerCacheClient);
+    public HWCsmsMariaDBDriver(CsmsCacheClient csmsCacheClient) {
+        super(csmsCacheClient);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class HWSecretsManagerMariaDBDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected boolean isAuthError(Exception e) {
+    protected boolean isAuthenticationError(Exception e) {
         if (e instanceof SQLException) {
             SQLException sqle = (SQLException) e;
             int errorCode = sqle.getErrorCode();

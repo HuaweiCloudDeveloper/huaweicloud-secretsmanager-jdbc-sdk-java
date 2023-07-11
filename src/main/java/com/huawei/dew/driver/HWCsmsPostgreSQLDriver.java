@@ -1,24 +1,24 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWSecretsManagerPostgreSQLDriver extends HWSecretsManagerDriver {
+public class HWCsmsPostgreSQLDriver extends HWCsmsDriver {
     public static final String LOGIN_FAILED_CODE = "28P01";
 
     public static final String SUBPREFIX = "postgresql";
 
     static {
-        HWSecretsManagerPostgreSQLDriver.registerDriver(new HWSecretsManagerPostgreSQLDriver());
+        HWCsmsPostgreSQLDriver.registerDriver(new HWCsmsPostgreSQLDriver());
     }
 
-    public HWSecretsManagerPostgreSQLDriver() {
+    public HWCsmsPostgreSQLDriver() {
         super();
     }
 
-    public HWSecretsManagerPostgreSQLDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        super(secretsManagerCacheClient);
+    public HWCsmsPostgreSQLDriver(CsmsCacheClient csmsCacheClient) {
+        super(csmsCacheClient);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class HWSecretsManagerPostgreSQLDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected boolean isAuthError(Exception e) {
+    protected boolean isAuthenticationError(Exception e) {
         if (e instanceof SQLException) {
             String sqlState = ((SQLException) e).getSQLState();
             return sqlState.equals(LOGIN_FAILED_CODE);

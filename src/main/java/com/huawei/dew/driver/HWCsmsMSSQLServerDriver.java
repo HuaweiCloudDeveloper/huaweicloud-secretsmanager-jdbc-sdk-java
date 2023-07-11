@@ -1,24 +1,24 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWSecretsManagerMSSQLServerDriver extends HWSecretsManagerDriver {
+public class HWCsmsMSSQLServerDriver extends HWCsmsDriver {
     public static final int LOGIN_FAILED = 1045;
 
     public static final String SUBPREFIX = "sqlserver";
 
     static {
-        HWSecretsManagerMSSQLServerDriver.registerDriver(new HWSecretsManagerMSSQLServerDriver());
+        HWCsmsMSSQLServerDriver.registerDriver(new HWCsmsMSSQLServerDriver());
     }
 
-    public HWSecretsManagerMSSQLServerDriver() {
+    public HWCsmsMSSQLServerDriver() {
         super();
     }
 
-    public HWSecretsManagerMSSQLServerDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        super(secretsManagerCacheClient);
+    public HWCsmsMSSQLServerDriver(CsmsCacheClient csmsCacheClient) {
+        super(csmsCacheClient);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class HWSecretsManagerMSSQLServerDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected boolean isAuthError(Exception e) {
+    protected boolean isAuthenticationError(Exception e) {
         if (e instanceof SQLException) {
             SQLException sqlException = (SQLException) e;
             return sqlException.getErrorCode() == LOGIN_FAILED;

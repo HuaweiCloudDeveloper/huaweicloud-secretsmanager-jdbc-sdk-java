@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
-public class SecretsManagerCacheClient implements Closeable {
+public class CsmsCacheClient implements Closeable {
 
     private static final long DEFAULT_TTL = 60 * 60 * 1000;
 
@@ -26,7 +26,7 @@ public class SecretsManagerCacheClient implements Closeable {
     private final Map<String, ScheduledFuture> scheduledFutureMap = new ConcurrentHashMap<>();
     private final Map<String, Long> nextExecuteTimeMap = new ConcurrentHashMap<>();
 
-    protected SecretsManagerClientBuilder secretsManagerClientBuilder;
+    protected CsmsClientBuilder csmsClientBuilder;
 
     protected CsmsClient csmsClient;
 
@@ -59,14 +59,11 @@ public class SecretsManagerCacheClient implements Closeable {
         }
         SecretInfoCache secretInfoCache = this.cacheStoreStrategy.getSecretInfoCache(secretName);
         if (checkSecretInfoCache(secretInfoCache)) {
-            return secretCacheHook.getInfo(secretInfoCache);
+            return secretCacheHook.cacheToInfo(secretInfoCache);
         } else {
-
-            synchronized (secretName.intern()) {
-                SecretInfo secretInfo = getSecretByAPI(secretName);
-                refresh(secretName, secretInfo);
-                return secretInfo;
-            }
+            SecretInfo secretInfo = getSecret(secretName);
+            refresh(secretName, secretInfo);
+            return secretInfo;
         }
     }
 
@@ -90,7 +87,7 @@ public class SecretsManagerCacheClient implements Closeable {
         return true;
     }
 
-    private SecretInfo getSecretByAPI(String secretName) {
+    private SecretInfo getSecret(String secretName) {
 
         ShowSecretRequest showSecretRequest = new ShowSecretRequest().withSecretName(secretName);
         ShowSecretStageRequest showSecretStageRequest = new ShowSecretStageRequest().withSecretName(secretName).withStageName("SYSCURRENT");
@@ -125,19 +122,16 @@ public class SecretsManagerCacheClient implements Closeable {
                 refresh(secretName, secretInfo);
             } catch (Throwable e) {
                 result = false;
-                System.out.println();
             }
             try {
                 removeRefreshTask(secretName);
             } catch (Throwable e) {
                 result = false;
-                System.out.println();
             }
             try {
                 addRefreshTask(secretName, new RefreshTask(secretName));
             } catch (Throwable e) {
                 result = false;
-                System.out.println();
             }
             return result;
         }
@@ -148,7 +142,7 @@ public class SecretsManagerCacheClient implements Closeable {
             secretInfo = this.getSecretInfo(secretName);
         }
 
-        SecretInfoCache secretInfoCache = this.secretCacheHook.covertToCache(secretInfo);
+        SecretInfoCache secretInfoCache = this.secretCacheHook.infoToCache(secretInfo);
         if (secretInfoCache != null) {
             this.cacheStoreStrategy.storeSecret(secretInfoCache);
         }
@@ -156,9 +150,9 @@ public class SecretsManagerCacheClient implements Closeable {
 
     private void refreshCacheStore(String secretName, SecretInfo secretInfo) {
         if (null == secretInfo) {
-            secretInfo = getSecretByAPI(secretName);
+            secretInfo = getSecret(secretName);
         }
-        SecretInfoCache secretInfoCache = secretCacheHook.covertToCache(secretInfo);
+        SecretInfoCache secretInfoCache = secretCacheHook.infoToCache(secretInfo);
         if (null != secretInfoCache) {
             cacheStoreStrategy.storeSecret(secretInfoCache);
         }
@@ -167,10 +161,10 @@ public class SecretsManagerCacheClient implements Closeable {
 
     private void addRefreshTask(String secretName, Runnable runnable) {
         SecretInfoCache secretInfoCache = cacheStoreStrategy.getSecretInfoCache(secretName);
-        long nextRefreshTime = refreshStrategy.parseNextRefreshTime(secretInfoCache);
+        long nextRefreshTime = refreshStrategy.parseNextRotateTime(secretInfoCache);
         if (nextRefreshTime <= 0) {
             long refreshTimeStamp = secretInfoCache.getRefreshTimeStamp();
-            nextRefreshTime = refreshStrategy.getNextRefreshTime(secretTTLMap.getOrDefault(secretName, DEFAULT_TTL), refreshTimeStamp);
+            nextRefreshTime = refreshStrategy.getNextRotateTime(secretTTLMap.getOrDefault(secretName, DEFAULT_TTL), refreshTimeStamp);
             nextRefreshTime = Math.max(nextRefreshTime, System.currentTimeMillis());
         }
 
@@ -188,15 +182,6 @@ public class SecretsManagerCacheClient implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (cacheStoreStrategy != null) {
-            cacheStoreStrategy.close();
-        }
-        if (refreshStrategy != null) {
-            refreshStrategy.close();
-        }
-        if (secretCacheHook != null) {
-            secretCacheHook.close();
-        }
         if (!scheduledThreadPoolExecutor.isShutdown()) {
             scheduledThreadPoolExecutor.shutdownNow();
         }

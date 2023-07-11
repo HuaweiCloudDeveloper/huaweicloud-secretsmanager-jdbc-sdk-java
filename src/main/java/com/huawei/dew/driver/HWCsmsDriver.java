@@ -1,10 +1,12 @@
 package com.huawei.dew.driver;
 
 import com.google.gson.Gson;
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
-import com.huawei.dew.csms.client.SecretsManagerCacheClientBuilder;
+import com.huawei.dew.csms.client.CsmsCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClientBuilder;
+import com.huawei.dew.csms.client.CsmsClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.util.ConfigUtils;
+import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.util.Config;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
@@ -21,7 +23,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public abstract class HWSecretsManagerDriver implements Driver {
+public abstract class HWCsmsDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
@@ -31,36 +33,36 @@ public abstract class HWSecretsManagerDriver implements Driver {
 
     private static final int RETRY_TIMES = 3;
 
-    protected SecretsManagerCacheClient secretsManagerCacheClient;
+    protected CsmsCacheClient csmsCacheClient;
 
-    private ConfigUtils configUtils;
+    private Config config;
 
     protected abstract String getRealClass();
 
-    protected abstract boolean isAuthError(Exception e);
+    protected abstract boolean isAuthenticationError(Exception e);
 
     public abstract String getPropertySubPrefix();
 
-    public HWSecretsManagerDriver() {
-        this(SecretsManagerCacheClientBuilder.getClient());
+    public HWCsmsDriver() {
+        this(CsmsCacheClientBuilder.getClient());
     }
 
-    public HWSecretsManagerDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        this.secretsManagerCacheClient = secretsManagerCacheClient;
+    public HWCsmsDriver(CsmsCacheClient csmsCacheClient) {
+        this.csmsCacheClient = csmsCacheClient;
         setConfig();
         registerDriver(this);
     }
 
     private void setConfig() {
-        this.configUtils = ConfigUtils.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
-        if (configUtils == null) {
+        this.config = Config.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
+        if (config == null) {
             this.realClass = getRealClass();
         } else {
-            this.realClass = configUtils.getStringPropertyWithDefault("realDriverClass", getRealClass());
+            this.realClass = config.getStringPropertyWithDefault("realDriverClass", getRealClass());
         }
     }
 
-    public static void registerDriver(HWSecretsManagerDriver driver) {
+    public static void registerDriver(HWCsmsDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
@@ -68,9 +70,9 @@ public abstract class HWSecretsManagerDriver implements Driver {
         }
     }
 
-    private static void shutdown(HWSecretsManagerDriver driver) {
+    private static void shutdown(HWCsmsDriver driver) {
         try {
-            driver.secretsManagerCacheClient.close();
+            driver.csmsCacheClient.close();
         } catch (IOException e) {
             throw new WrappedException("SecretCacheClient close fail");
         }
@@ -102,7 +104,7 @@ public abstract class HWSecretsManagerDriver implements Driver {
         Properties userInfo = new Properties();
         for (int retryTimes = 0; retryTimes < RETRY_TIMES; retryTimes++) {
             try {
-                SecretInfo secretInfo = secretsManagerCacheClient.getSecretInfo(secretName);
+                SecretInfo secretInfo = csmsCacheClient.getSecretInfo(secretName);
                 String secretValue = secretInfo.getValue();
                 Properties secretProperties = new Gson().fromJson(secretValue, Properties.class);
 
@@ -114,9 +116,9 @@ public abstract class HWSecretsManagerDriver implements Driver {
             try {
                 return getWrappedDriver().connect(url, userInfo);
             } catch (SQLException e) {
-                if (isAuthError(e)) {
+                if (isAuthenticationError(e)) {
                     try {
-                        secretsManagerCacheClient.refreshNow(secretName);
+                        csmsCacheClient.refreshNow(secretName);
                     } catch (InterruptedException ex) {
                         throw new WrappedException("Refresh secrets fail");
                     }

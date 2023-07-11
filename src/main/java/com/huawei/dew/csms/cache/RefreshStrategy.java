@@ -5,7 +5,7 @@ import com.huawei.dew.csms.model.SecretInfoCache;
 
 import java.io.Closeable;
 
-public interface RefreshStrategy extends Closeable {
+public interface RefreshStrategy {
 
     /**
      * 计算下一次轮转时间
@@ -14,7 +14,7 @@ public interface RefreshStrategy extends Closeable {
      * @param lastRotationTime 上一次轮转时间
      * @return 下一次轮转时间
      */
-    long getNextRefreshTime(long period, long lastRotationTime);
+    long getNextRotateTime(long period, long lastRotationTime);
 
     /**
      * 根据凭据缓存获取解析下一次轮转时间
@@ -22,7 +22,7 @@ public interface RefreshStrategy extends Closeable {
      * @param secretInfoCache
      * @return 下一次轮转时间
      */
-    long parseNextRefreshTime(SecretInfoCache secretInfoCache);
+    long parseNextRotateTime(SecretInfoCache secretInfoCache);
 
     /**
      * 根据凭据获取轮转周期

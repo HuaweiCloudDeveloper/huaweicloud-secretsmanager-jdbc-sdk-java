@@ -4,7 +4,7 @@ import com.huawei.dew.csms.model.SecretInfoCache;
 
 import java.io.Closeable;
 
-public interface CacheStoreStrategy extends Closeable {
+public interface CacheStoreStrategy {
 
     /**
      * 初始化凭据缓存策略

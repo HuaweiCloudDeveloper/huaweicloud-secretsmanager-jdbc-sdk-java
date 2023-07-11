@@ -27,10 +27,4 @@ public class MemoryCacheStoreStrategy implements CacheStoreStrategy {
         return secretInfoCacheMap.get(secretName);
     }
 
-    @Override
-    public void close() throws IOException {
-        if (null != secretInfoCacheMap) {
-            secretInfoCacheMap.clear();
-        }
-    }
 }

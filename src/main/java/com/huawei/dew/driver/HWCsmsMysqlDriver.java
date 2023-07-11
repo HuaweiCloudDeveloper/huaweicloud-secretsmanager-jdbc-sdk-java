@@ -1,25 +1,25 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
+public class HWCsmsMysqlDriver extends HWCsmsDriver {
 
     public static final int LOGIN_FAILED = 1045;
 
     public static final String SUBPREFIX = "mysql";
 
     static {
-        HWSecretsManagerMysqlDriver.registerDriver(new HWSecretsManagerMysqlDriver());
+        HWCsmsMysqlDriver.registerDriver(new HWCsmsMysqlDriver());
     }
 
-    public HWSecretsManagerMysqlDriver() {
+    public HWCsmsMysqlDriver() {
         super();
     }
 
-    public HWSecretsManagerMysqlDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        super(secretsManagerCacheClient);
+    public HWCsmsMysqlDriver(CsmsCacheClient csmsCacheClient) {
+        super(csmsCacheClient);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HWSecretsManagerMysqlDriver extends HWSecretsManagerDriver {
     }
 
     @Override
-    protected boolean isAuthError(Exception e) {
+    protected boolean isAuthenticationError(Exception e) {
         if (e instanceof SQLException) {
             SQLException sqle = (SQLException) e;
             int code = sqle.getErrorCode();

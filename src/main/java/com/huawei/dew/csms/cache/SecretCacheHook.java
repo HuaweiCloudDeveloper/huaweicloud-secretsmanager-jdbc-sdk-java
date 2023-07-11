@@ -3,27 +3,21 @@ package com.huawei.dew.csms.cache;
 import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.csms.model.SecretInfoCache;
 
-import java.io.Closeable;
-import java.io.IOException;
-
-public interface SecretCacheHook extends Closeable {
+public interface SecretCacheHook {
 
     /**
-     * 将凭据对象转换为凭据缓存对象
+     * 将凭据转换为凭据缓存
      *
      * @param secretInfo
-     * @return 凭据缓存对象
+     * @return 凭据缓存
      */
-    SecretInfoCache covertToCache(SecretInfo secretInfo);
+    SecretInfoCache infoToCache(SecretInfo secretInfo);
 
     /**
-     * 将凭据缓存对象转换成凭据对象
+     * 将凭据缓存转换成凭据
      *
      * @param secretInfoCache
-     * @return 凭据对象
+     * @return 凭据
      */
-    SecretInfo getInfo(SecretInfoCache secretInfoCache);
-
-    @Override
-    void close() throws IOException;
+    SecretInfo cacheToInfo(SecretInfoCache secretInfoCache);
 }

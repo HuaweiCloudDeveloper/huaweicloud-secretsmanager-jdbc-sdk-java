@@ -5,14 +5,14 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
-public final class ConfigUtils {
+public final class Config {
     public static final String CONFIG_FILE = "secretmanager.properties";
 
     private Properties config;
 
     private String prefix;
 
-    private ConfigUtils(Properties config, String prefix) {
+    private Config(Properties config, String prefix) {
         this.config = config;
         this.prefix = prefix;
     }
@@ -31,15 +31,15 @@ public final class ConfigUtils {
         return newConfig;
     }
 
-    public static ConfigUtils loadConfigFile(String resourceName) {
-        return new ConfigUtils(loadConfigFromFile(resourceName), null);
+    public static Config loadConfigFile(String resourceName) {
+        return new Config(loadConfigFromFile(resourceName), null);
     }
 
-    public static ConfigUtils loadConfig() {
+    public static Config loadConfig() {
         return loadConfigFile(CONFIG_FILE);
     }
 
-    public ConfigUtils getSubconfig(String subPrefix) {
+    public Config getSubconfig(String subPrefix) {
         Enumeration<String> names = (Enumeration<String>) config.propertyNames();
         Properties properties = new Properties();
         while (names.hasMoreElements()) {
@@ -52,9 +52,9 @@ public final class ConfigUtils {
         if (properties == null) {
             return null;
         } else if (prefix != null) {
-            return new ConfigUtils(properties, prefix + "." + subPrefix);
+            return new Config(properties, prefix + "." + subPrefix);
         } else {
-            return new ConfigUtils(properties, subPrefix);
+            return new Config(properties, subPrefix);
         }
     }
 

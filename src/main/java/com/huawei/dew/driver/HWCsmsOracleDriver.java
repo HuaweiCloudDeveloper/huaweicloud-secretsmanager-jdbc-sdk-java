@@ -1,10 +1,10 @@
 package com.huawei.dew.driver;
 
-import com.huawei.dew.csms.client.SecretsManagerCacheClient;
+import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWSecretsManagerOracleDriver extends HWSecretsManagerDriver {
+public class HWCsmsOracleDriver extends HWCsmsDriver {
     public static final int CREDENTIALS_NOT_MATCH = 17079;
 
     public static final int USERNAME_PASSWORD_INVALID = 1017;
@@ -14,15 +14,15 @@ public class HWSecretsManagerOracleDriver extends HWSecretsManagerDriver {
     public static final String SUBPREFIX = "oracle";
 
     static {
-        HWSecretsManagerOracleDriver.registerDriver(new HWSecretsManagerOracleDriver());
+        HWCsmsOracleDriver.registerDriver(new HWCsmsOracleDriver());
     }
 
-    public HWSecretsManagerOracleDriver() {
+    public HWCsmsOracleDriver() {
         super();
     }
 
-    public HWSecretsManagerOracleDriver(SecretsManagerCacheClient secretsManagerCacheClient) {
-        super(secretsManagerCacheClient);
+    public HWCsmsOracleDriver(CsmsCacheClient csmsCacheClient) {
+        super(csmsCacheClient);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class HWSecretsManagerOracleDriver extends HWSecretsManagerDriver {
 
 
     @Override
-    protected boolean isAuthError(Exception exception) {
+    protected boolean isAuthenticationError(Exception exception) {
         if (exception instanceof SQLException) {
             SQLException sqlException = (SQLException) exception;
             int errorCode = sqlException.getErrorCode();
