@@ -11,11 +11,14 @@ import static org.junit.Assert.assertNotNull;
 
 public class JDBCTest {
     @Test
-    public void testMysqlDriver() throws SQLException {
+    public void testMysqlDriver() {
         HWCsmsMysqlDriver driver = new HWCsmsMysqlDriver();
         Properties info = new Properties();
         info.put("user", "localdb");
-        Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info);
-        assertNotNull(connect);
+        try (Connection connect = driver.connect("jdbc-csms:mysql://localhost:3306/kmsdb?useUnicode=true&characterEncoding=UTF-8", info)) {
+            assertNotNull(connect);
+        } catch (SQLException e) {
+            throw new WrappedException(e);
+        }
     }
 }

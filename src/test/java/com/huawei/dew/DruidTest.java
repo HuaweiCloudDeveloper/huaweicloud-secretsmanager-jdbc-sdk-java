@@ -17,8 +17,10 @@ public class DruidTest {
         Properties properties = new Properties();
         properties.load(DruidTest.class.getResourceAsStream("/druid.properties"));
         DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
-
-        Connection connection = dataSource.getConnection();
-        assertNotNull(connection);
+        try (Connection connection = dataSource.getConnection()) {
+            assertNotNull(connection);
+        } catch (Exception e) {
+            throw new WrappedException(e);
+        }
     }
 }
