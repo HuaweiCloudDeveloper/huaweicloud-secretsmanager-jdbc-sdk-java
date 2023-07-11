@@ -5,12 +5,10 @@ import com.huawei.dew.util.WrappedException;
 import org.junit.Test;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
+
+import static org.junit.Assert.assertNotNull;
 
 public class DruidTest {
 
@@ -19,16 +17,8 @@ public class DruidTest {
         Properties properties = new Properties();
         properties.load(DruidTest.class.getResourceAsStream("/druid.properties"));
         DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
-        try (
-                Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("select * from kekinfo");
-        ) {
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("uuid"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        Connection connection = dataSource.getConnection();
+        assertNotNull(connection);
     }
 }
