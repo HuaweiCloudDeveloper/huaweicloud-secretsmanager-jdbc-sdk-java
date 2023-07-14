@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.huaweicloud.dew</groupId>
-    <artifactId>huaweicloud-secretsmanager-jdbc</artifactId>
+    <artifactId>huaweicloud-secretsmanager-jdbc-sdk-java</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
