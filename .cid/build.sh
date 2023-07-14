@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-
-mvn -Dmaven.test.skip=true clean install -Pjar
+echo "=======================build.sh========================="
+mvn -Dmaven.test.skip=true clean install
