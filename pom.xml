@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-kms</artifactId>
-            <version>3.1.44</version>
+            <version>3.1.48</version>
         </dependency>
 
         <dependency>
