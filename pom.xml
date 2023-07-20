@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.huaweicloud.dew</groupId>
-    <artifactId>huaweicloud-secretsmanager-jdbc-sdk-java</artifactId>
+    <artifactId>huaweicloud-csms-jdbc</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>secret-jdbc-1</name>
+    <name>Huaweicloud csms jdbc driver library</name>
     <url>http://maven.apache.org</url>
 
     <properties>
