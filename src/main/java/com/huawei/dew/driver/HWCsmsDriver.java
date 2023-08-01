@@ -53,7 +53,7 @@ public abstract class HWCsmsDriver implements Driver {
 
     public void setConfig() {
         this.config = Config.loadConfig(Constants.CONFIG_FILE);
-        this.realClass = this.config.getStringPropertyWithDefault("realClass", getRealClass());
+        this.realClass = this.config.getStringPropertyWithDefault("realClass", this.getRealClass());
     }
 
     public static void registerDriver(HWCsmsDriver driver) {
