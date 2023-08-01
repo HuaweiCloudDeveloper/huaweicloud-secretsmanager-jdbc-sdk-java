@@ -25,7 +25,8 @@ public class CsmsClientBuilder {
      */
     public static void init() {
 
-        Config config = Config.loadConfig();
+
+        Config config = Config.loadConfig(Constants.CONFIG_FILE);
         if (config == null) {
             throw new WrappedException("loadConfig error. Config is null.");
         }
@@ -60,11 +61,10 @@ public class CsmsClientBuilder {
      */
     public static CsmsClient build() {
         init();
-        CsmsClient csmsClient = CsmsClient.newBuilder()
+        return CsmsClient.newBuilder()
                 .withCredential(credential)
                 .withHttpConfig(httpConfig)
                 .withEndpoints(KmsEndpointList)
                 .build();
-        return csmsClient;
     }
 }

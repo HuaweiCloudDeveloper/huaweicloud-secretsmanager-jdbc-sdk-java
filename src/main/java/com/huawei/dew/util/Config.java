@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class Config {
-    public static final String CONFIG_FILE = "csms.properties";
 
     public Properties config;
 
@@ -16,10 +15,10 @@ public final class Config {
         this.config = config;
     }
 
-    public static Config loadConfig() {
+    public static Config loadConfig(String fileName) {
         Properties configFromFile = new Properties(System.getProperties());
         try (
-                InputStream configInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
+                InputStream configInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)
         ) {
             if (configInput != null) {
                 configFromFile.load(configInput);

@@ -1,6 +1,7 @@
 package com.huawei.dew.util;
 
 public interface Constants {
+    String CONFIG_FILE = "csms.properties";
 
     String VERSION_STAGE_CURRENT = "SYSCURRENT";
 
@@ -42,6 +43,5 @@ public interface Constants {
     String COMMON_TYPE = "COMMON";
 
     String RDS_TYPE = "RDS";
-
 
 }

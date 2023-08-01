@@ -26,8 +26,6 @@ public abstract class HWCsmsDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
-    private static final String DRIVER_CLASS = "realDriverClass";
-
     private String realClass;
 
     private Config config;
@@ -47,14 +45,15 @@ public abstract class HWCsmsDriver implements Driver {
     }
 
     public HWCsmsDriver(CsmsCacheClient cacheClient) {
-        initConfig();
+        setConfig();
+
         this.csmsCacheClient = cacheClient;
         registerDriver(this);
     }
 
-    public void initConfig() {
-        config = Config.loadConfig();
-        this.realClass = config.getStringPropertyWithDefault(DRIVER_CLASS, getRealClass());
+    public void setConfig() {
+        this.config = Config.loadConfig(Constants.CONFIG_FILE);
+        this.realClass = this.config.getStringPropertyWithDefault("realClass", getRealClass());
     }
 
     public static void registerDriver(HWCsmsDriver driver) {
