@@ -1,9 +1,7 @@
 package com.huawei.dew.csms.cache;
 
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.csms.model.SecretInfoCache;
-
-import java.io.Closeable;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
 public interface RefreshStrategy {
 
@@ -19,10 +17,10 @@ public interface RefreshStrategy {
     /**
      * 根据凭据缓存获取解析下一次轮转时间
      *
-     * @param secretInfoCache
+     * @param secretInfoCacheObject
      * @return 下一次轮转时间
      */
-    long parseNextRotateTime(SecretInfoCache secretInfoCache);
+    long parseNextRotateTime(SecretInfoCacheObject secretInfoCacheObject);
 
     /**
      * 根据凭据获取轮转周期

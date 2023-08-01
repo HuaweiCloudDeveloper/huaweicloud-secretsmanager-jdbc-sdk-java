@@ -11,12 +11,6 @@ public class HWCsmsOracleDriver extends HWCsmsDriver {
 
     public static final int USER_PASSWORD_WRONG = 9911;
 
-    public static final String SUBPREFIX = "oracle";
-
-    static {
-        HWCsmsOracleDriver.registerDriver(new HWCsmsOracleDriver());
-    }
-
     public HWCsmsOracleDriver() {
         super();
     }
@@ -28,11 +22,6 @@ public class HWCsmsOracleDriver extends HWCsmsDriver {
     @Override
     protected String getRealClass() {
         return "oracle.jdbc.OracleDriver";
-    }
-
-    @Override
-    public String getPropertySubPrefix() {
-        return SUBPREFIX;
     }
 
 

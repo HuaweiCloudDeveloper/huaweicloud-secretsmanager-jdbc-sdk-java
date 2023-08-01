@@ -4,7 +4,7 @@ import com.huawei.dew.csms.cache.SecretCacheHook;
 import com.huawei.dew.csms.model.SecretInfo;
 import com.huawei.dew.csms.cache.CacheStoreStrategy;
 import com.huawei.dew.csms.cache.RefreshStrategy;
-import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
@@ -57,9 +57,9 @@ public class CsmsCacheClient implements Closeable {
         if (StringUtils.isEmpty(secretName)) {
             throw new IllegalArgumentException("secretName must not be null!");
         }
-        SecretInfoCache secretInfoCache = this.cacheStoreStrategy.getSecretInfoCache(secretName);
-        if (checkSecretInfoCache(secretInfoCache)) {
-            return secretCacheHook.cacheToInfo(secretInfoCache);
+        SecretInfoCacheObject secretInfoCacheObject = this.cacheStoreStrategy.getSecretInfoCacheObj(secretName);
+        if (checkSecretInfoCache(secretInfoCacheObject)) {
+            return secretCacheHook.cacheToInfo(secretInfoCacheObject);
         } else {
             SecretInfo secretInfo = getSecret(secretName);
             refresh(secretName, secretInfo);
@@ -67,11 +67,11 @@ public class CsmsCacheClient implements Closeable {
         }
     }
 
-    private Boolean checkSecretInfoCache(SecretInfoCache secretInfoCache) {
-        if (secretInfoCache == null) {
+    private Boolean checkSecretInfoCache(SecretInfoCacheObject secretInfoCacheObject) {
+        if (secretInfoCacheObject == null) {
             return false;
         }
-        SecretInfo secretInfo = secretInfoCache.getSecretInfo();
+        SecretInfo secretInfo = secretInfoCacheObject.getSecretInfo();
         if (null == secretInfo || StringUtils.isEmpty(secretInfo.getValue())) {
             return false;
         }
@@ -81,14 +81,13 @@ public class CsmsCacheClient implements Closeable {
             period = secretTTLMap.getOrDefault(secretInfo.getName(), DEFAULT_TTL);
         }
 
-        if (System.currentTimeMillis() - secretInfoCache.getRefreshTimeStamp() <= period) {
+        if (System.currentTimeMillis() - secretInfoCacheObject.getRefreshTimeStamp() <= period) {
             return false;
         }
         return true;
     }
 
     private SecretInfo getSecret(String secretName) {
-
         ShowSecretRequest showSecretRequest = new ShowSecretRequest().withSecretName(secretName);
         ShowSecretStageRequest showSecretStageRequest = new ShowSecretStageRequest().withSecretName(secretName).withStageName("SYSCURRENT");
         ShowSecretResponse secretResponse = csmsClient.showSecret(showSecretRequest);
@@ -142,9 +141,9 @@ public class CsmsCacheClient implements Closeable {
             secretInfo = this.getSecretInfo(secretName);
         }
 
-        SecretInfoCache secretInfoCache = this.secretCacheHook.infoToCache(secretInfo);
-        if (secretInfoCache != null) {
-            this.cacheStoreStrategy.storeSecret(secretInfoCache);
+        SecretInfoCacheObject secretInfoCacheObject = this.secretCacheHook.infoToCache(secretInfo);
+        if (secretInfoCacheObject != null) {
+            this.cacheStoreStrategy.storeSecret(secretInfoCacheObject);
         }
     }
 
@@ -152,18 +151,18 @@ public class CsmsCacheClient implements Closeable {
         if (null == secretInfo) {
             secretInfo = getSecret(secretName);
         }
-        SecretInfoCache secretInfoCache = secretCacheHook.infoToCache(secretInfo);
-        if (null != secretInfoCache) {
-            cacheStoreStrategy.storeSecret(secretInfoCache);
+        SecretInfoCacheObject secretInfoCacheObject = secretCacheHook.infoToCache(secretInfo);
+        if (null != secretInfoCacheObject) {
+            cacheStoreStrategy.storeSecret(secretInfoCacheObject);
         }
         System.out.println("secretName refresh success!");
     }
 
     private void addRefreshTask(String secretName, Runnable runnable) {
-        SecretInfoCache secretInfoCache = cacheStoreStrategy.getSecretInfoCache(secretName);
-        long nextRefreshTime = refreshStrategy.parseNextRotateTime(secretInfoCache);
+        SecretInfoCacheObject secretInfoCacheObject = cacheStoreStrategy.getSecretInfoCacheObj(secretName);
+        long nextRefreshTime = refreshStrategy.parseNextRotateTime(secretInfoCacheObject);
         if (nextRefreshTime <= 0) {
-            long refreshTimeStamp = secretInfoCache.getRefreshTimeStamp();
+            long refreshTimeStamp = secretInfoCacheObject.getRefreshTimeStamp();
             nextRefreshTime = refreshStrategy.getNextRotateTime(secretTTLMap.getOrDefault(secretName, DEFAULT_TTL), refreshTimeStamp);
             nextRefreshTime = Math.max(nextRefreshTime, System.currentTimeMillis());
         }
@@ -208,8 +207,8 @@ public class CsmsCacheClient implements Closeable {
                 Set<String> secretNames = nextExecuteTimeMap.keySet();
                 if (null != secretNames && !secretNames.isEmpty()) {
                     for (String secretName : secretNames) {
-                        SecretInfoCache secretInfoCache = cacheStoreStrategy.getSecretInfoCache(secretName);
-                        if (null != secretInfoCache) {
+                        SecretInfoCacheObject secretInfoCacheObject = cacheStoreStrategy.getSecretInfoCacheObj(secretName);
+                        if (null != secretInfoCacheObject) {
                             Long nextRefreshTime = nextExecuteTimeMap.get(secretName);
                             if (System.currentTimeMillis() > nextRefreshTime + 10 * 60 * 1000L) {
                                 try {

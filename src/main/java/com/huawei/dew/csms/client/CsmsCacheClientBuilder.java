@@ -2,6 +2,7 @@ package com.huawei.dew.csms.client;
 
 import com.huawei.dew.csms.cache.*;
 import com.huawei.dew.util.Constants;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class CsmsCacheClientBuilder {
     private CsmsCacheClient csmsCacheClient;
@@ -60,7 +61,7 @@ public class CsmsCacheClientBuilder {
     }
 
     private void buildSecretCacheClient() {
-        if (null == csmsCacheClient) {
+        if (ObjectUtils.isEmpty(csmsCacheClient)) {
             csmsCacheClient = new CsmsCacheClient();
         }
     }

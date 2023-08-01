@@ -7,12 +7,6 @@ import java.sql.SQLException;
 public class HWCsmsPostgreSQLDriver extends HWCsmsDriver {
     public static final String LOGIN_FAILED_CODE = "28P01";
 
-    public static final String SUBPREFIX = "postgresql";
-
-    static {
-        HWCsmsPostgreSQLDriver.registerDriver(new HWCsmsPostgreSQLDriver());
-    }
-
     public HWCsmsPostgreSQLDriver() {
         super();
     }
@@ -26,10 +20,6 @@ public class HWCsmsPostgreSQLDriver extends HWCsmsDriver {
         return "org.postgresql.Driver";
     }
 
-    @Override
-    public String getPropertySubPrefix() {
-        return SUBPREFIX;
-    }
 
     @Override
     protected boolean isAuthenticationError(Exception e) {

@@ -7,12 +7,6 @@ import java.sql.SQLException;
 public class HWCsmsMariaDBDriver extends HWCsmsDriver {
     public static final int LOGIN_FAILED_CODE = 1045;
 
-    public static final String SUBPREFIX = "mariadb";
-
-    static {
-        HWCsmsMariaDBDriver.registerDriver(new HWCsmsMariaDBDriver());
-    }
-
     public HWCsmsMariaDBDriver() {
         super();
     }
@@ -24,11 +18,6 @@ public class HWCsmsMariaDBDriver extends HWCsmsDriver {
     @Override
     protected String getRealClass() {
         return "org.mariadb.jdbc.Driver";
-    }
-
-    @Override
-    public String getPropertySubPrefix() {
-        return SUBPREFIX;
     }
 
     @Override

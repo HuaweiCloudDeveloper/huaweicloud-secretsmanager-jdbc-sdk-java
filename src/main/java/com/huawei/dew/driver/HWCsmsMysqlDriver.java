@@ -4,15 +4,10 @@ import com.huawei.dew.csms.client.CsmsCacheClient;
 
 import java.sql.SQLException;
 
-public class HWCsmsMysqlDriver extends HWCsmsDriver {
+public final class HWCsmsMysqlDriver extends HWCsmsDriver {
 
     public static final int LOGIN_FAILED = 1045;
 
-    public static final String SUBPREFIX = "mysql";
-
-    static {
-        HWCsmsMysqlDriver.registerDriver(new HWCsmsMysqlDriver());
-    }
 
     public HWCsmsMysqlDriver() {
         super();
@@ -27,10 +22,6 @@ public class HWCsmsMysqlDriver extends HWCsmsDriver {
         return "com.mysql.cj.jdbc.Driver";
     }
 
-    @Override
-    public String getPropertySubPrefix() {
-        return SUBPREFIX;
-    }
 
     @Override
     protected boolean isAuthenticationError(Exception e) {

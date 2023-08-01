@@ -1,7 +1,7 @@
 package com.huawei.dew.csms.cache;
 
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
 public interface SecretCacheHook {
 
@@ -11,13 +11,13 @@ public interface SecretCacheHook {
      * @param secretInfo
      * @return 凭据缓存
      */
-    SecretInfoCache infoToCache(SecretInfo secretInfo);
+    SecretInfoCacheObject infoToCache(SecretInfo secretInfo);
 
     /**
      * 将凭据缓存转换成凭据
      *
-     * @param secretInfoCache
+     * @param secretInfoCacheObject
      * @return 凭据
      */
-    SecretInfo cacheToInfo(SecretInfoCache secretInfoCache);
+    SecretInfo cacheToInfo(SecretInfoCacheObject secretInfoCacheObject);
 }

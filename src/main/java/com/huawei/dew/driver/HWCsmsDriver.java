@@ -3,13 +3,12 @@ package com.huawei.dew.driver;
 import com.google.gson.Gson;
 import com.huawei.dew.csms.client.CsmsCacheClient;
 import com.huawei.dew.csms.client.CsmsCacheClientBuilder;
-import com.huawei.dew.csms.client.CsmsClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.csms.model.SecretInfoCache;
 import com.huawei.dew.util.Config;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 
 import java.io.IOException;
@@ -27,8 +26,6 @@ public abstract class HWCsmsDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
-    private static final String PROPERTY_PREFIX = "drivers";
-
     private String realClass;
 
     private static final int RETRY_TIMES = 3;
@@ -41,7 +38,6 @@ public abstract class HWCsmsDriver implements Driver {
 
     protected abstract boolean isAuthenticationError(Exception e);
 
-    public abstract String getPropertySubPrefix();
 
     public HWCsmsDriver() {
         this(CsmsCacheClientBuilder.getClient());
@@ -49,24 +45,21 @@ public abstract class HWCsmsDriver implements Driver {
 
     public HWCsmsDriver(CsmsCacheClient csmsCacheClient) {
         this.csmsCacheClient = csmsCacheClient;
-        setConfig();
+
+        initConfig();
         registerDriver(this);
     }
 
-    private void setConfig() {
-        this.config = Config.loadConfig().getSubconfig(PROPERTY_PREFIX + "." + getPropertySubPrefix());
-        if (config == null) {
-            this.realClass = getRealClass();
-        } else {
-            this.realClass = config.getStringPropertyWithDefault("realDriverClass", getRealClass());
-        }
+    private void initConfig() {
+        this.config = Config.loadConfig();
+        this.realClass = getRealClass();
     }
 
     public static void registerDriver(HWCsmsDriver driver) {
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
-            return;
+            throw new WrappedException("register driver exception, ", sqlException);
         }
     }
 
@@ -80,20 +73,20 @@ public abstract class HWCsmsDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-
-        /**
-         * url表示数据库地址
-         * info键值对，键为"secretName"，值为凭据名。
-         */
-        String unWrappedUrl = "";
-        String secretName = "";
         if (!acceptsURL(url)) {
             return null;
         } else {
-            unWrappedUrl = unWrapUrl(url);
-            if (null != info && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
-                secretName = info.getProperty(Constants.INFO_USER);
-                return connectWithSecret(unWrappedUrl, secretName);
+            String unWrappedUrl = unWrapUrl(url);
+            if (!ObjectUtils.isEmpty(info) && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
+                String secretName = info.getProperty(Constants.INFO_USER);
+                int retry = 0;
+                while (retry++ <= RETRY_TIMES) {
+                    Connection connection = connectWithSecret(unWrappedUrl, secretName);
+                    if (!ObjectUtils.isEmpty(connection)) {
+                        return connection;
+                    }
+                }
+                throw new SQLException("Connect failed.");
             } else {
                 return getWrappedDriver().connect(unWrappedUrl, info);
             }
@@ -102,31 +95,27 @@ public abstract class HWCsmsDriver implements Driver {
 
     public Connection connectWithSecret(String url, String secretName) throws SQLException {
         Properties userInfo = new Properties();
-        for (int retryTimes = 0; retryTimes < RETRY_TIMES; retryTimes++) {
-            try {
-                SecretInfo secretInfo = csmsCacheClient.getSecretInfo(secretName);
-                String secretValue = secretInfo.getValue();
-                Properties secretProperties = new Gson().fromJson(secretValue, Properties.class);
-
-                userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
-                userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
-            } catch (Exception e) {
-                throw new WrappedException("Get user info fail");
-            }
-            try {
-                return getWrappedDriver().connect(url, userInfo);
-            } catch (SQLException e) {
-                if (isAuthenticationError(e)) {
-                    try {
-                        csmsCacheClient.refreshNow(secretName);
-                    } catch (InterruptedException ex) {
-                        throw new WrappedException("Refresh secrets fail");
-                    }
-                }
-                throw e;
-            }
+        try {
+            SecretInfo secretInfo = csmsCacheClient.getSecretInfo(secretName);
+            String secretValue = secretInfo.getValue();
+            Properties secretProperties = new Gson().fromJson(secretValue, Properties.class);
+            userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
+            userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
+        } catch (Exception e) {
+            throw new WrappedException("Get user info fail");
         }
-        throw new SQLException("Connect times limit exceeded");
+        try {
+            return getWrappedDriver().connect(url, userInfo);
+        } catch (SQLException e) {
+            if (isAuthenticationError(e)) {
+                try {
+                    csmsCacheClient.refreshNow(secretName);
+                } catch (InterruptedException ex) {
+                    throw new WrappedException("Refresh secrets fail");
+                }
+            }
+            throw e;
+        }
     }
 
 

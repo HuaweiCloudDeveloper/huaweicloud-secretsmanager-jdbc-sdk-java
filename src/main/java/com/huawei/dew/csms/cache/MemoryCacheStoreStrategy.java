@@ -1,29 +1,25 @@
 package com.huawei.dew.csms.cache;
 
-import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MemoryCacheStoreStrategy implements CacheStoreStrategy {
 
-    /**
-     * map键值对缓存，key为凭据名，value为凭据缓存对象
-     */
-    private final Map<String, SecretInfoCache> secretInfoCacheMap = new ConcurrentHashMap<>();
+    private final Map<String, SecretInfoCacheObject> secretInfoCacheMap = new ConcurrentHashMap<>();
 
     @Override
     public void init() {
     }
 
     @Override
-    public void storeSecret(SecretInfoCache secretInfoCache) {
-        secretInfoCacheMap.put(secretInfoCache.getSecretInfo().getName(), secretInfoCache);
+    public void storeSecret(SecretInfoCacheObject secretInfoCacheObject) {
+        secretInfoCacheMap.put(secretInfoCacheObject.getSecretInfo().getName(), secretInfoCacheObject);
     }
 
     @Override
-    public SecretInfoCache getSecretInfoCache(String secretName) {
+    public SecretInfoCacheObject getSecretInfoCacheObj(String secretName) {
         return secretInfoCacheMap.get(secretName);
     }
 

@@ -2,11 +2,13 @@ package com.huawei.dew.csms.cache;
 
 import com.google.gson.Gson;
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
-import java.io.IOException;
 import java.util.Map;
 
+/**
+ * @author q30037735
+ */
 public class DefaultRefreshStrategy implements RefreshStrategy {
 
     private Gson GSON = new Gson();
@@ -26,13 +28,13 @@ public class DefaultRefreshStrategy implements RefreshStrategy {
     }
 
     @Override
-    public long parseNextRotateTime(SecretInfoCache secretInfoCache) {
-        SecretInfo secretInfo = secretInfoCache.getSecretInfo();
+    public long parseNextRotateTime(SecretInfoCacheObject secretInfoCacheObject) {
+        SecretInfo secretInfo = secretInfoCacheObject.getSecretInfo();
         long period = parsePeriod(secretInfo);
         if (period <= 0) {
             return period;
         }
-        return getNextRotateTime(period, secretInfoCache.getRefreshTimeStamp());
+        return getNextRotateTime(period, secretInfoCacheObject.getRefreshTimeStamp());
     }
 
     @Override

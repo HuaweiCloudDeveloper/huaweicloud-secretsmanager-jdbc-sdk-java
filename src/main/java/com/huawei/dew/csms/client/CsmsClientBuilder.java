@@ -6,6 +6,7 @@ import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.core.http.HttpConfig;
+import com.huaweicloud.sdk.core.utils.StringUtils;
 import com.huaweicloud.sdk.csms.v1.CsmsClient;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class CsmsClientBuilder {
 
     private static HttpConfig httpConfig;
 
-    private static List<String> KmsEndpoints;
+    private static List<String> KmsEndpointList;
 
 
     /**
@@ -46,7 +47,10 @@ public class CsmsClientBuilder {
                 .withTimeout(config.getIntPropertyWithDefault(Constants.TIMEOUT, 10))
                 .withIgnoreSSLVerification("true".equals(config.getStringPropertyWithDefault(Constants.IGNORE_SSL, "fasle")));
 
-        KmsEndpoints = Arrays.asList(config.getStringPropertyWithDefault(Constants.KMS_ENDPOINT, null).split(","));
+        String kmsEndpoints = config.getStringPropertyWithDefault(Constants.KMS_ENDPOINT, null);
+        if(!StringUtils.isEmpty(kmsEndpoints)){
+            KmsEndpointList = Arrays.asList(kmsEndpoints.split(","));
+        }
     }
 
     /**
@@ -59,7 +63,7 @@ public class CsmsClientBuilder {
         CsmsClient csmsClient = CsmsClient.newBuilder()
                 .withCredential(credential)
                 .withHttpConfig(httpConfig)
-                .withEndpoints(KmsEndpoints)
+                .withEndpoints(KmsEndpointList)
                 .build();
         return csmsClient;
     }

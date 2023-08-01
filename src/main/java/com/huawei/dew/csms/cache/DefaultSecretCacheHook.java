@@ -1,9 +1,7 @@
 package com.huawei.dew.csms.cache;
 
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.csms.model.SecretInfoCache;
-
-import java.io.IOException;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
 public class DefaultSecretCacheHook implements SecretCacheHook {
 
@@ -14,12 +12,12 @@ public class DefaultSecretCacheHook implements SecretCacheHook {
     }
 
     @Override
-    public SecretInfoCache infoToCache(SecretInfo secretInfo) {
-        return new SecretInfoCache(secretInfo, stage, System.currentTimeMillis());
+    public SecretInfoCacheObject infoToCache(SecretInfo secretInfo) {
+        return new SecretInfoCacheObject(secretInfo, stage, System.currentTimeMillis());
     }
 
     @Override
-    public SecretInfo cacheToInfo(SecretInfoCache secretInfoCache) {
-        return secretInfoCache.getSecretInfo();
+    public SecretInfo cacheToInfo(SecretInfoCacheObject secretInfoCacheObject) {
+        return secretInfoCacheObject.getSecretInfo();
     }
 }

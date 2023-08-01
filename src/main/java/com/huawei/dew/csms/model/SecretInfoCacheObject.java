@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 凭据缓存对象
  */
-public class SecretInfoCache implements Serializable, Cloneable {
+public class SecretInfoCacheObject implements Serializable, Cloneable {
 
     /**
      * 凭据对象
@@ -22,7 +22,7 @@ public class SecretInfoCache implements Serializable, Cloneable {
      */
     private long refreshTimeStamp;
 
-    public SecretInfoCache() {
+    public SecretInfoCacheObject() {
     }
 
     /**
@@ -32,7 +32,7 @@ public class SecretInfoCache implements Serializable, Cloneable {
      * @param stage
      * @param refreshTimeStamp
      */
-    public SecretInfoCache(SecretInfo secretInfo, String stage, long refreshTimeStamp) {
+    public SecretInfoCacheObject(SecretInfo secretInfo, String stage, long refreshTimeStamp) {
         this.secretInfo = secretInfo;
         this.stage = stage;
         this.refreshTimeStamp = refreshTimeStamp;
@@ -63,11 +63,11 @@ public class SecretInfoCache implements Serializable, Cloneable {
     }
 
     @Override
-    public SecretInfoCache clone() throws CloneNotSupportedException {
-        SecretInfoCache secretInfoCache;
-        secretInfoCache = (SecretInfoCache) super.clone();
-        secretInfoCache.secretInfo = secretInfo.clone();
-        return secretInfoCache;
+    public SecretInfoCacheObject clone() throws CloneNotSupportedException {
+        SecretInfoCacheObject secretInfoCacheObject;
+        secretInfoCacheObject = (SecretInfoCacheObject) super.clone();
+        secretInfoCacheObject.secretInfo = secretInfo.clone();
+        return secretInfoCacheObject;
     }
 
     @Override

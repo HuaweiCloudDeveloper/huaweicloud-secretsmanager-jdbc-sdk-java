@@ -57,7 +57,6 @@ public class SecretInfo implements Serializable, Cloneable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", versionId='" + versionId + '\'' +
-                ", value='" + value + '\'' +
                 ", type='" + type + '\'' +
                 ", createTime='" + createTime + '\'' +
                 ", autoRotation=" + autoRotation +

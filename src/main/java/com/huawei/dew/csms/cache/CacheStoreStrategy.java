@@ -1,24 +1,28 @@
 package com.huawei.dew.csms.cache;
 
-import com.huawei.dew.csms.model.SecretInfoCache;
+import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
-import java.io.Closeable;
+/**
+ *
+ */
 
 public interface CacheStoreStrategy {
 
-    /**
-     * 初始化凭据缓存策略
-     */
     void init();
-
     /**
      * 缓存凭据
+     *
+     * @param secretInfoCacheObject 凭据缓存对象
+     * @return
      */
-    void storeSecret(SecretInfoCache secretInfoCache);
+    void storeSecret(SecretInfoCacheObject secretInfoCacheObject);
 
     /**
-     * 获取缓存凭据缓存
+     * 按凭据名获取缓存中的凭据信息
+     *
+     * @param secretName 凭据名
+     * @return 凭据信息
      */
-    public SecretInfoCache getSecretInfoCache(String secretName);
+    public SecretInfoCacheObject getSecretInfoCacheObj(String secretName);
 
 }
