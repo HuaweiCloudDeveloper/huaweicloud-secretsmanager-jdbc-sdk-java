@@ -4,7 +4,9 @@ import com.huawei.dew.driver.HWCsmsMysqlDriver;
 import com.huawei.dew.util.WrappedException;
 import org.junit.Test;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertNotNull;

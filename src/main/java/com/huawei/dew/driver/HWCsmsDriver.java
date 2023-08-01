@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.huawei.dew.csms.client.CsmsCacheClient;
 import com.huawei.dew.csms.client.CsmsCacheClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
+import com.huawei.dew.util.Config;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;
@@ -25,7 +26,11 @@ public abstract class HWCsmsDriver implements Driver {
 
     private static final String SCHEME = "jdbc-csms";
 
+    private static final String DRIVER_CLASS = "driverClass";
+
     private String realClass;
+
+    private Config config;
 
     private static final int RETRY_TIMES = 3;
 
@@ -42,12 +47,18 @@ public abstract class HWCsmsDriver implements Driver {
     }
 
     public HWCsmsDriver(CsmsCacheClient cacheClient) {
-        init();
+        initConfig();
         this.csmsCacheClient = cacheClient;
         registerDriver(this);
     }
 
-    public void init() {
+    public void initConfig() {
+        config = Config.loadConfig();
+        String driverClass = config.getStringPropertyWithDefault(DRIVER_CLASS, null);
+        if (driverClass == null) {
+            this.realClass = getRealClass();
+            return;
+        }
         this.realClass = getRealClass();
     }
 
