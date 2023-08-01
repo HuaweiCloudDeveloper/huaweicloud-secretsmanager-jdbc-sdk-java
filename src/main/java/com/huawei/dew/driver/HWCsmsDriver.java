@@ -32,6 +32,7 @@ public abstract class HWCsmsDriver implements Driver {
 
     protected CsmsCacheClient csmsCacheClient;
 
+
     protected abstract String getRealClass();
 
     protected abstract boolean isAuthenticationError(Exception e);
@@ -41,11 +42,14 @@ public abstract class HWCsmsDriver implements Driver {
         this(CsmsCacheClientBuilder.getClient());
     }
 
-    public HWCsmsDriver(CsmsCacheClient csmsCacheClient) {
-        this.csmsCacheClient = csmsCacheClient;
-
-        this.realClass = getRealClass();
+    public HWCsmsDriver(CsmsCacheClient cacheClient) {
+        init();
+        this.csmsCacheClient = cacheClient;
         registerDriver(this);
+    }
+
+    public void init() {
+        this.realClass = getRealClass();
     }
 
     public static void registerDriver(HWCsmsDriver driver) {
