@@ -1,6 +1,5 @@
 package com.huawei.dew.csms.model;
 
-
 import java.io.Serializable;
 
 public class SecretInfo implements Serializable, Cloneable {

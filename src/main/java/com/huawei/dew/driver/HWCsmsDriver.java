@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.huawei.dew.csms.client.CsmsCacheClient;
 import com.huawei.dew.csms.client.CsmsCacheClientBuilder;
 import com.huawei.dew.csms.model.SecretInfo;
-import com.huawei.dew.util.Config;
 import com.huawei.dew.util.Constants;
 import com.huawei.dew.util.WrappedException;
 import com.huaweicloud.sdk.core.utils.StringUtils;

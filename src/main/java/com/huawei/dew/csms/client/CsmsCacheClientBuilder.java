@@ -1,6 +1,10 @@
 package com.huawei.dew.csms.client;
 
-import com.huawei.dew.csms.cache.*;
+import com.huawei.dew.csms.cache.CacheStoreStrategy;
+import com.huawei.dew.csms.cache.DefaultRefreshStrategy;
+import com.huawei.dew.csms.cache.DefaultSecretCacheHook;
+import com.huawei.dew.csms.cache.MemoryCacheStoreStrategy;
+import com.huawei.dew.csms.cache.RefreshStrategy;
 import com.huawei.dew.util.Constants;
 import org.apache.commons.lang3.ObjectUtils;
 
