@@ -29,11 +29,7 @@ public class HWCsmsMysqlDriverTest {
     public void init() {
         System.setProperty("driver.mysql.realDriverClass", "com.huawei.dew.driver.HWCsmsMysqlDriver");
         MockitoAnnotations.initMocks(this);
-        try {
-            driver = new HWCsmsMysqlDriver(csmsCacheClient);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        driver = new HWCsmsMysqlDriver(csmsCacheClient);
     }
 
     @Test

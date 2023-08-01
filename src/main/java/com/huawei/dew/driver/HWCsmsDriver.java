@@ -32,8 +32,6 @@ public abstract class HWCsmsDriver implements Driver {
 
     protected CsmsCacheClient csmsCacheClient;
 
-    private Config config;
-
     protected abstract String getRealClass();
 
     protected abstract boolean isAuthenticationError(Exception e);

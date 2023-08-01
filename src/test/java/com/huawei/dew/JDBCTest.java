@@ -1,10 +1,8 @@
 package com.huawei.dew;
 
-import com.huawei.dew.csms.client.CsmsCacheClient;
 import com.huawei.dew.driver.HWCsmsMysqlDriver;
 import com.huawei.dew.util.WrappedException;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.sql.*;
 import java.util.Properties;
