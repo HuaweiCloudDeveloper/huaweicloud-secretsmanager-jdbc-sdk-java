@@ -30,11 +30,7 @@ public class HWCsmsMariaDBDriverTest {
     public void init() {
         System.setProperty("driver.mysql.realDriverClass", "com.huawei.dew.driver.HWCsmsMariaDBDriver");
         MockitoAnnotations.initMocks(this);
-        try {
-            driver = new HWCsmsMariaDBDriver(csmsCacheClient);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        driver = new HWCsmsMariaDBDriver(csmsCacheClient);
     }
 
     @Test

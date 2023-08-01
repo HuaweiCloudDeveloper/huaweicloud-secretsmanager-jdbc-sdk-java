@@ -48,7 +48,7 @@ public class CsmsClientBuilder {
                 .withIgnoreSSLVerification("true".equals(config.getStringPropertyWithDefault(Constants.IGNORE_SSL, "fasle")));
 
         String kmsEndpoints = config.getStringPropertyWithDefault(Constants.KMS_ENDPOINT, null);
-        if(!StringUtils.isEmpty(kmsEndpoints)){
+        if (!StringUtils.isEmpty(kmsEndpoints)) {
             KmsEndpointList = Arrays.asList(kmsEndpoints.split(","));
         }
     }

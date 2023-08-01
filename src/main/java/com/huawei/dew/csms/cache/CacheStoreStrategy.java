@@ -9,6 +9,7 @@ import com.huawei.dew.csms.model.SecretInfoCacheObject;
 public interface CacheStoreStrategy {
 
     void init();
+
     /**
      * 缓存凭据
      *
