@@ -45,8 +45,6 @@ public abstract class HWCsmsDriver implements Driver {
     }
 
     public HWCsmsDriver(CsmsCacheClient cacheClient) {
-        setConfig();
-
         this.csmsCacheClient = cacheClient;
         registerDriver(this);
     }
@@ -56,7 +54,9 @@ public abstract class HWCsmsDriver implements Driver {
         this.realClass = this.config.getStringPropertyWithDefault("realClass", this.getRealClass());
     }
 
-    public static void registerDriver(HWCsmsDriver driver) {
+    public void registerDriver(HWCsmsDriver driver) {
+        setConfig();
+
         try {
             DriverManager.registerDriver(driver, () -> shutdown(driver));
         } catch (SQLException sqlException) {
