@@ -6,9 +6,6 @@ import com.huawei.dew.csms.model.SecretInfoCacheObject;
 
 import java.util.Map;
 
-/**
- * @author q30037735
- */
 public class DefaultRefreshStrategy implements RefreshStrategy {
 
     private Gson GSON = new Gson();
