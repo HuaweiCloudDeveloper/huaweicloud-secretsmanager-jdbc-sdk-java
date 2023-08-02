@@ -74,6 +74,7 @@ public abstract class HWCsmsDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
+        Connection connection = null;
         if (!acceptsURL(url)) {
             return null;
         } else {
@@ -81,20 +82,25 @@ public abstract class HWCsmsDriver implements Driver {
             if (!ObjectUtils.isEmpty(info) && !StringUtils.isEmpty(info.getProperty(Constants.INFO_USER))) {
                 String secretName = info.getProperty(Constants.INFO_USER);
                 int retry = 0;
-                while (retry++ <= RETRY_TIMES) {
-                    Connection connection = connectWithSecret(unWrappedUrl, secretName);
-                    if (!ObjectUtils.isEmpty(connection)) {
-                        return connection;
+                while (retry < RETRY_TIMES) {
+                    try {
+                        connection = connectWithSecret(unWrappedUrl, secretName);
+                        if (!ObjectUtils.isEmpty(connection)) {
+                            return connection;
+                        }
+                        retry++;
+                    } catch (Exception e) {
+                        retry++;
                     }
                 }
-                throw new SQLException("Connect failed.");
             } else {
-                return getWrappedDriver().connect(unWrappedUrl, info);
+                throw new WrappedException("Info is invalid.");
             }
+            throw new WrappedException("The connection failed three times.");
         }
     }
 
-    public Connection connectWithSecret(String url, String secretName) throws SQLException {
+    public Connection connectWithSecret(String url, String secretName) throws SQLException, InterruptedException {
         Properties userInfo = new Properties();
         try {
             SecretInfo secretInfo = csmsCacheClient.getSecretInfo(secretName);
@@ -103,16 +109,15 @@ public abstract class HWCsmsDriver implements Driver {
             userInfo.put(Constants.INFO_USER, secretProperties.get(Constants.SECRET_USER));
             userInfo.put(Constants.PASSWORD, secretProperties.get(Constants.PASSWORD));
         } catch (Exception e) {
-            throw new WrappedException("Get user info fail");
+            throw new WrappedException("Get user info fail.");
         }
         try {
             return getWrappedDriver().connect(url, userInfo);
         } catch (SQLException e) {
             if (isAuthenticationError(e)) {
-                try {
-                    csmsCacheClient.refreshNow(secretName);
-                } catch (InterruptedException ex) {
-                    throw new WrappedException("Refresh secrets fail");
+                Boolean refresh = csmsCacheClient.refreshNow(secretName);
+                if (!refresh) {
+                    throw new WrappedException("refresh csmsCacheClient failed. ", e);
                 }
             }
             throw e;
