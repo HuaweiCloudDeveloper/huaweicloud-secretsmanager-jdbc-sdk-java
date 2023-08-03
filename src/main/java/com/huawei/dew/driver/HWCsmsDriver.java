@@ -74,7 +74,6 @@ public abstract class HWCsmsDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        Connection connection = null;
         if (!acceptsURL(url)) {
             return null;
         } else {
@@ -83,15 +82,11 @@ public abstract class HWCsmsDriver implements Driver {
                 String secretName = info.getProperty(Constants.INFO_USER);
                 int retry = 0;
                 while (retry < RETRY_TIMES) {
-                    try {
-                        connection = connectWithSecret(unWrappedUrl, secretName);
-                        if (!ObjectUtils.isEmpty(connection)) {
-                            return connection;
-                        }
-                        retry++;
-                    } catch (Exception e) {
-                        retry++;
+                    Connection connection = connectWithSecret(unWrappedUrl, secretName);
+                    if (!ObjectUtils.isEmpty(connection)) {
+                        return connection;
                     }
+                    retry++;
                 }
             } else {
                 throw new WrappedException("Info is invalid.");
@@ -100,7 +95,7 @@ public abstract class HWCsmsDriver implements Driver {
         }
     }
 
-    public Connection connectWithSecret(String url, String secretName) throws SQLException, InterruptedException {
+    public Connection connectWithSecret(String url, String secretName) throws SQLException {
         Properties userInfo = new Properties();
         try {
             SecretInfo secretInfo = csmsCacheClient.getSecretInfo(secretName);
@@ -115,9 +110,13 @@ public abstract class HWCsmsDriver implements Driver {
             return getWrappedDriver().connect(url, userInfo);
         } catch (SQLException e) {
             if (isAuthenticationError(e)) {
-                Boolean refresh = csmsCacheClient.refreshNow(secretName);
-                if (!refresh) {
-                    throw new WrappedException("refresh csmsCacheClient failed. ", e);
+                try {
+                    Boolean refresh = csmsCacheClient.refreshNow(secretName);
+                    if (!refresh) {
+                        throw new WrappedException("refresh csms cache failed. ", e);
+                    }
+                } catch (InterruptedException exception) {
+                    throw new WrappedException("refresh csms cache exception.", exception);
                 }
             }
             throw e;
